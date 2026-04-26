@@ -17,11 +17,11 @@
   --paper:      #faf8f5;
   --white:      #ffffff;
 
-  --orange:        #E07000;
+  --orange:        #9E4F00;
   --orange-pale:   #fff4e6;
-  --teal:          #00A693;
+  --teal:          #007A6E;
   --teal-pale:     #e6f7f5;
-  --blue:          #4A9EFF;
+  --blue:          #0062cc;
 
   --broken-color:  var(--orange);
   --working-color: var(--teal);
@@ -350,7 +350,7 @@ header {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #aaa;
+  color: var(--white);
   margin-bottom: 6px;
 }
 .stat-card .sc-value {
@@ -363,7 +363,7 @@ header {
 .stat-card .sc-sub {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #aaa;
+  color: var(--white);
   margin-top: 4px;
 }
 .sc-value.blue   { color: var(--blue); }
@@ -420,7 +420,7 @@ header {
   vertical-align: middle;
 }
 .city-table tr:hover td { background: var(--orange-pale); }
-.city-table .rank { color: var(--muted); font-size: 11px; }
+.city-table .rank { color: #666; font-size: 11px; }
 .city-table .city-name { font-weight: 500; color: var(--ink); font-family: var(--font-body); }
 .rate-bar-cell { min-width: 180px; }
 .rate-bar-wrap { display: flex; align-items: center; gap: 10px; }
@@ -455,11 +455,11 @@ footer {
   margin: 0 auto;
   font-family: var(--font-mono);
   font-size: 12px;
-  color: #aaa;
+  color: var(--white);
   line-height: 1.8;
 }
 .footer-inner a { color: #ccc; }
-.footer-note { color: #888; margin-top: 4px; }
+.footer-note { color: #ccc; margin-top: 4px; }
 
 /* ── STATE PATHS ─────────────────────────────── */
 .state-path {
