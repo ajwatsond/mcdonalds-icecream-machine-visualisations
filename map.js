@@ -195,39 +195,42 @@ function updateDotVisibility() {
 }
 
 function drawDots() {
-  const scale = currentTransform.k;
-  if (scale < DOT_ZOOM_THRESHOLD) return;
+  const k = currentTransform.k;
+  if (k < DOT_ZOOM_THRESHOLD) return;
 
   const svgEl = document.getElementById('choropleth');
   const rect = svgEl.getBoundingClientRect();
-  const cw = dotCanvas.width;
-  const ch = dotCanvas.height;
 
-  ctx.clearRect(0, 0, cw, ch);
+  // Canvas CSS size = SVG rendered size
+  const cssW = rect.width;
+  const cssH = rect.height;
 
-  // Dot size scales inversely with zoom (feels natural)
-  const dotR = Math.max(1.5, Math.min(5, 12 / scale));
+  // The SVG viewBox is MAP_W x MAP_H but rendered at cssW x cssH
+  // So there's a scale factor from SVG units to CSS pixels
+  const svgScaleX = cssW / MAP_W;
+  const svgScaleY = cssH / MAP_H;
 
-  // Filter to zoomed state if applicable
+  ctx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+
+  // Dot size: smaller when zoomed out, bigger when zoomed in
+  const dotR = Math.max(2, Math.min(6, k * 1.2));
+
+  // Filter to zoomed state only if applicable
   const locs = zoomedState
     ? LOCATIONS.filter(l => l.state === zoomedState)
     : LOCATIONS;
 
-  // Figure out pixel ratio
-  const scaleX = cw / MAP_W;
-  const scaleY = ch / MAP_H;
-
   for (const loc of locs) {
     const proj = projection([loc.lon, loc.lat]);
     if (!proj) continue;
-    const [sx, sy] = proj;
+    const [sx, sy] = proj; // SVG viewBox coordinates
 
-    // Apply current zoom transform
-    const px = (currentTransform.x + sx * currentTransform.k) * scaleX;
-    const py = (currentTransform.y + sy * currentTransform.k) * scaleY;
+    // Convert: SVG viewBox → CSS pixels → apply zoom transform
+    const px = currentTransform.x * svgScaleX + sx * k * svgScaleX;
+    const py = currentTransform.y * svgScaleY + sy * k * svgScaleY;
 
-    // Clip to canvas
-    if (px < -dotR || px > cw + dotR || py < -dotR || py > ch + dotR) continue;
+    // Clip
+    if (px < -dotR || px > cssW + dotR || py < -dotR || py > cssH + dotR) continue;
 
     ctx.beginPath();
     ctx.arc(px, py, dotR, 0, Math.PI * 2);
@@ -236,7 +239,7 @@ function drawDots() {
 
     if (dotR > 3) {
       ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.6;
       ctx.stroke();
     }
   }
@@ -246,17 +249,18 @@ function drawDots() {
 function syncCanvasSize() {
   const svgEl = document.getElementById('choropleth');
   const rect = svgEl.getBoundingClientRect();
-  dotCanvas.width = rect.width * window.devicePixelRatio;
-  dotCanvas.height = rect.height * window.devicePixelRatio;
+  const dpr = window.devicePixelRatio || 1;
+  dotCanvas.width = rect.width * dpr;
+  dotCanvas.height = rect.height * dpr;
   dotCanvas.style.width = rect.width + 'px';
   dotCanvas.style.height = rect.height + 'px';
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  // Reset and reapply DPR scale cleanly (never accumulate)
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 function syncCanvas() {
   const svgEl = document.getElementById('choropleth');
   const rect = svgEl.getBoundingClientRect();
-  // re-sync if size changed
   if (Math.abs(dotCanvas.offsetWidth - rect.width) > 2) syncCanvasSize();
 }
 
