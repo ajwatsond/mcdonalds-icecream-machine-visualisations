@@ -1,14 +1,16 @@
 /* ============================================================
    McBroken — Visualization Site
+   Aesthetic: Editorial data journalism. Bold. Functional.
    Colorblind-safe palette: orange (broken), teal (working), blue (neutral)
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
-  /* Brand / UI */
-  --red:        #e8191e;   /* header/footer accents only — not data */
+  /* Brand */
+  --red:        #e8191e;   /* kept for header/border accents only */
   --red-dark:   #9e0b0f;
+  --red-pale:   #fff5f0;
   --yellow:     #ffcb05;
   --black:      #111111;
   --ink:        #1a1a1a;
@@ -18,17 +20,18 @@
   --paper:      #faf8f5;
   --white:      #ffffff;
 
-  /* Colorblind-safe semantic colors (WCAG AA on dark + light bg)
-     Safe under deuteranopia, protanopia, tritanopia              */
-  --orange:        #E07000;   /* broken / bad   */
-  --orange-pale:   #fff4e6;
-  --teal:          #00A693;   /* working / good */
-  --teal-pale:     #e6f7f5;
-  --blue:          #4A9EFF;   /* neutral / total */
+  /* Colorblind-safe semantic colors
+     Safe under deuteranopia, protanopia, tritanopia
+     WCAG AA contrast on both light and dark backgrounds        */
+  --orange:          #E07000;   /* bad / broken  */
+  --teal:            #00A693;   /* good / working */
+  --blue:            #4A9EFF;   /* neutral / total */
+  --orange-pale:     #fff4e6;
+  --teal-pale:       #e6f7f5;
 
-  /* Map dot colors */
-  --broken-color:  var(--orange);
-  --working-color: var(--teal);
+  /* Map dot colors — replaces old red/green dots */
+  --broken-color:    var(--orange);
+  --working-color:   var(--teal);
 
   /* Typography */
   --font-display: 'Bebas Neue', sans-serif;
@@ -119,121 +122,72 @@ header {
 }
 .hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 72px);
-  line-height: 1.0;
+  font-size: clamp(48px, 8vw, 96px);
+  letter-spacing: 0.03em;
   color: var(--white);
-  letter-spacing: 0.02em;
-  margin-bottom: 16px;
+  line-height: 0.95;
+  margin-bottom: 20px;
 }
-.hero h1 em {
-  color: var(--orange);
-  font-style: normal;
-}
+.hero h1 span { color: var(--orange); }
 .hero-sub {
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--muted);
-}
-.hero-sub a { color: var(--yellow); }
-
-/* ── CONTROLS BAR ────────────────────────────── */
-.controls-bar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 56px;
-  z-index: 90;
-}
-.controls-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.toggle-group {
-  display: flex;
-  background: #f0ece6;
-  border-radius: 6px;
-  padding: 3px;
-  gap: 2px;
-}
-.toggle-btn {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  padding: 6px 16px;
-  border: none;
-  background: transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--mid);
-  transition: all 0.15s;
-}
-.toggle-btn.active {
-  background: var(--black);
-  color: var(--white);
-}
-.toggle-btn:hover:not(.active) { background: #e0dbd4; }
-
-.zoom-hint {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  color: #666;
+  max-width: 480px;
+  line-height: 1.7;
 }
 
 /* ── MAP SECTION ─────────────────────────────── */
-.map-section {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px 24px;
+main.map-section {
   display: grid;
   grid-template-columns: 1fr 200px;
-  gap: 24px;
-  align-items: start;
-}
-
-.map-wrapper {
+  gap: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
   position: relative;
-  background: #e8f4fc;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
 }
-
-#choropleth {
-  display: block;
-  width: 100%;
-  height: auto;
-  cursor: pointer;
+.map-wrap {
+  position: relative;
+  
+  background: var(--paper);
 }
+.map-wrap svg { width: 100%; height: 100%; display: block; }
 
-#dot-canvas {
+/* Mode toggle */
+.map-controls {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
 }
-#dot-canvas.visible { opacity: 1; }
+.mode-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn.active {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+.mode-btn:hover:not(.active) { border-color: var(--black); }
 
-/* State zoom overlay */
+/* Zoom label */
 .zoomed-label {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   background: rgba(17,17,17,0.85);
   color: var(--white);
   padding: 8px 14px;
@@ -243,7 +197,6 @@ header {
   backdrop-filter: blur(4px);
 }
 .zoomed-label.hidden { display: none; }
-
 .back-btn {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -287,8 +240,7 @@ header {
 /* ── LEGEND ──────────────────────────────────── */
 .legend-panel {
   background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border-left: 1px solid var(--border);
   padding: 20px;
   box-shadow: var(--shadow);
 }
@@ -376,12 +328,16 @@ header {
   color: #555;
   margin-top: 4px;
 }
+
+/* Colorblind-safe stat card colors */
 .sc-value.blue   { color: var(--blue); }
 .sc-value.orange { color: var(--orange); }
 .sc-value.teal   { color: var(--teal); }
-.sc-value.red    { color: var(--orange); }   /* legacy remap */
-.sc-value.green  { color: var(--teal); }     /* legacy remap */
+/* Legacy mappings — orange/teal replace red/green */
+.sc-value.red    { color: var(--orange); }
+.sc-value.green  { color: var(--teal); }
 
+/* Icon prefix — decorative, aria-hidden in HTML */
 .sc-icon {
   display: inline-block;
   font-size: 0.55em;
@@ -392,6 +348,8 @@ header {
   position: relative;
   top: -2px;
 }
+
+/* Focus ring for keyboard nav */
 .stat-card:focus-within {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
@@ -488,8 +446,8 @@ footer {
 
 /* ── RESPONSIVE ──────────────────────────────── */
 @media (max-width: 900px) {
-  .map-section { grid-template-columns: 1fr; }
-  .legend-panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  main.map-section { grid-template-columns: 1fr; }
+  .legend-panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; border-left: none; border-top: 1px solid var(--border); }
   .legend-gradient { height: 24px; width: 160px; }
   .legend-labels { flex-direction: row; height: auto; }
   .stats-inner { grid-template-columns: repeat(3, 1fr); }
