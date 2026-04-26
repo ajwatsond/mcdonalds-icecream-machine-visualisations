@@ -2,30 +2,41 @@
    stats.js — Live stats from data.mcbroken.com/stats.json
    LOCATIONS and STATE_DATA are already loaded as globals
    from locations_data.js and state_data.js
+
+   Accessibility:
+   - Color is never the sole indicator (icons + labels supplement color)
+   - Colorblind-safe palette: blue (neutral), orange (bad), teal (good)
+   - WCAG AA contrast ratios met on dark background
+   - Screen reader: aria-label on each card, live region for global %
    ============================================================ */
 const STATS_URL = 'https://data.mcbroken.com/stats.json';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Stat cards can be built immediately from local data
   buildStatCardsFromLocal();
 
   try {
-    // Fetch live stats for city table + global broken %
     const res = await fetch(STATS_URL);
     const statsData = await res.json();
 
-    document.getElementById('global-pct').textContent =
-      statsData.broken.toFixed(1) + '%';
+    const globalPct = document.getElementById('global-pct');
+    globalPct.textContent = statsData.broken.toFixed(1) + '%';
+    // aria-live so screen readers announce the update when it changes
+    globalPct.setAttribute('aria-live', 'polite');
+    globalPct.setAttribute('aria-label',
+      `${statsData.broken.toFixed(1)} percent of machines currently broken`);
+
     document.getElementById('last-updated').textContent =
       'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     buildCityTable(statsData.cities);
   } catch (err) {
     console.error('Failed to fetch live stats:', err);
-    // Fall back to computing from local LOCATIONS data
     const brokenUS = LOCATIONS.filter(l => l.is_broken).length;
     const pct = (brokenUS / LOCATIONS.length * 100).toFixed(1);
-    document.getElementById('global-pct').textContent = pct + '%';
+    const globalPct = document.getElementById('global-pct');
+    globalPct.textContent = pct + '%';
+    globalPct.setAttribute('aria-label',
+      `${pct} percent of machines currently broken (cached data)`);
     document.getElementById('last-updated').textContent = 'Cached data';
   }
 });
@@ -40,20 +51,79 @@ function buildStatCardsFromLocal() {
   const worst  = sorted[0];
   const best   = sorted[sorted.length - 1];
 
-  setCard('sc-total',   'Locations tracked',  total.toLocaleString(),   "U.S. McDonald's", '');
-  setCard('sc-broken',  'Broken right now',   broken.toLocaleString(),  `${(broken / total * 100).toFixed(1)}% of all locations`, 'red');
-  setCard('sc-working', 'Working machines',   working.toLocaleString(), `${(working / total * 100).toFixed(1)}% operational`, 'green');
-  setCard('sc-worst',   'Worst state',        worst[0], `${worst[1].rate}% broken (${worst[1].broken}/${worst[1].total})`, 'red');
-  setCard('sc-best',    'Best state',         best[0],  `${best[1].rate}% broken (${best[1].broken}/${best[1].total})`, 'green');
+  // Colorblind-safe classes: 'blue' (neutral), 'orange' (bad), 'teal' (good)
+  // Icons give non-color meaning — never rely on color alone
+  setCard(
+    'sc-total',
+    'Locations tracked',
+    total.toLocaleString(),
+    "U.S. McDonald's",
+    'blue',
+    '⬡',
+    `${total.toLocaleString()} total U.S. McDonald's locations tracked`
+  );
+  setCard(
+    'sc-broken',
+    'Broken right now',
+    broken.toLocaleString(),
+    `${(broken / total * 100).toFixed(1)}% of all locations`,
+    'orange',
+    '✕',
+    `${broken.toLocaleString()} machines broken right now, ${(broken / total * 100).toFixed(1)} percent of all locations`
+  );
+  setCard(
+    'sc-working',
+    'Working machines',
+    working.toLocaleString(),
+    `${(working / total * 100).toFixed(1)}% operational`,
+    'teal',
+    '✓',
+    `${working.toLocaleString()} machines working, ${(working / total * 100).toFixed(1)} percent operational`
+  );
+  setCard(
+    'sc-worst',
+    'Worst state',
+    worst[0],
+    `${worst[1].rate}% broken (${worst[1].broken}/${worst[1].total})`,
+    'orange',
+    '▲',
+    `Worst state: ${worst[0]}, ${worst[1].rate} percent broken, ${worst[1].broken} of ${worst[1].total} locations`
+  );
+  setCard(
+    'sc-best',
+    'Best state',
+    best[0],
+    `${best[1].rate}% broken (${best[1].broken}/${best[1].total})`,
+    'teal',
+    '▼',
+    `Best state: ${best[0]}, ${best[1].rate} percent broken, ${best[1].broken} of ${best[1].total} locations`
+  );
 }
 
-function setCard(id, label, value, sub, colorClass) {
+/**
+ * @param {string} id         - element ID
+ * @param {string} label      - card label
+ * @param {string} value      - big display number/text
+ * @param {string} sub        - subtitle text
+ * @param {string} colorClass - 'blue' | 'orange' | 'teal'
+ * @param {string} icon       - decorative symbol (aria-hidden)
+ * @param {string} ariaLabel  - full plain-text description for screen readers
+ */
+function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
   const el = document.getElementById(id);
   if (!el) return;
+
+  // role="region" + aria-label lets screen readers navigate directly to each card
+  el.setAttribute('role', 'region');
+  el.setAttribute('aria-label', ariaLabel);
+
+  // Visual content is aria-hidden; the region's aria-label carries the meaning
   el.innerHTML = `
-    <div class="sc-label">${label}</div>
-    <div class="sc-value ${colorClass}">${value}</div>
-    <div class="sc-sub">${sub}</div>
+    <div class="sc-label" aria-hidden="true">${label}</div>
+    <div class="sc-value ${colorClass}" aria-hidden="true">
+      <span class="sc-icon">${icon}</span>${value}
+    </div>
+    <div class="sc-sub" aria-hidden="true">${sub}</div>
   `;
 }
 
@@ -65,20 +135,25 @@ function buildCityTable(cities) {
   const tbody = document.getElementById('city-tbody');
   if (!tbody) return;
 
+  // Accessible table: thead already has <th> scope, rows get aria-label for summary
   tbody.innerHTML = top20.map((city, i) => {
     const brokenCount = Math.round(city.broken / 100 * city.total_locations);
+    const pct         = city.broken.toFixed(1);
+    const barWidth    = Math.min(100, city.broken);
+    const rowLabel    = `Rank ${i + 1}: ${city.city}, ${brokenCount} broken out of ${city.total_locations} locations, ${pct} percent`;
+
     return `
-      <tr>
-        <td class="rank">${i + 1}</td>
-        <td class="city-name">${city.city}</td>
-        <td style="color:var(--red);font-weight:500">${brokenCount}</td>
-        <td>${city.total_locations}</td>
-        <td class="rate-bar-cell">
-          <div class="rate-bar-wrap">
+      <tr aria-label="${rowLabel}">
+        <td class="rank" aria-hidden="true">${i + 1}</td>
+        <td class="city-name" aria-hidden="true">${city.city}</td>
+        <td style="color:var(--orange);font-weight:500" aria-hidden="true">${brokenCount}</td>
+        <td aria-hidden="true">${city.total_locations}</td>
+        <td class="rate-bar-cell" aria-hidden="true">
+          <div class="rate-bar-wrap" role="presentation">
             <div class="rate-bar-bg">
-              <div class="rate-bar-fill" style="width:${Math.min(100, city.broken)}%"></div>
+              <div class="rate-bar-fill" style="width:${barWidth}%"></div>
             </div>
-            <span class="rate-pct">${city.broken.toFixed(1)}%</span>
+            <span class="rate-pct">${pct}%</span>
           </div>
         </td>
       </tr>
