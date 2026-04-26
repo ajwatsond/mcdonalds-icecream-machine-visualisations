@@ -89,7 +89,7 @@ header {
 .stat-value {
   font-family: var(--font-display);
   font-size: 24px;
-  color: var(--orange);
+  color: #F4A340;
   letter-spacing: 0.04em;
 }
 .header-meta {
@@ -121,7 +121,7 @@ header {
   margin-bottom: 16px;
 }
 .hero h1 em {
-  color: var(--orange);
+  color: #F4A340;
   font-style: normal;
 }
 .hero-sub {
@@ -366,11 +366,11 @@ header {
   color: var(--white);
   margin-top: 4px;
 }
-.sc-value.blue   { color: var(--blue); }
-.sc-value.orange { color: var(--orange); }
-.sc-value.teal   { color: var(--teal); }
-.sc-value.red    { color: var(--orange); }
-.sc-value.green  { color: var(--teal); }
+.sc-value.blue   { color: #7DC3ff; }
+.sc-value.orange { color: #F4A340; }
+.sc-value.teal   { color: #2DD4C4; }
+.sc-value.red    { color: #F4A340; }
+.sc-value.green  { color: #2DD4C4; }
 .sc-icon {
   display: inline-block;
   font-size: 0.55em;
