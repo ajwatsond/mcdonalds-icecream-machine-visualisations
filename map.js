@@ -6,18 +6,24 @@
 // ── CONFIG ──────────────────────────────────────────────────
 const MAP_W = 960;
 const MAP_H = 580;
-const DOT_ZOOM_THRESHOLD = 3; // show dots above this zoom level
+const DOT_ZOOM_THRESHOLD = 3;
 const ZOOM_DURATION = 750;
 
-let currentMode = 'rate'; // 'rate' | 'total'
+let currentMode = 'rate';
 let zoomedState = null;
 let currentTransform = d3.zoomIdentity;
 
+// Colorblind-safe dot colors (match CSS --orange / --teal)
+const COLOR_BROKEN  = 'rgba(224,112,0,0.85)';   // --orange
+const COLOR_WORKING = 'rgba(0,166,147,0.75)';    // --teal
+
 // Color scales
+// Rate scale: light orange-pale → orange → dark orange-red
 const rateScale = d3.scaleSequential()
   .domain([0, 50])
-  .interpolator(d3.interpolateRgbBasis(['#fff5f0', '#fca5a5', '#ef4444', '#9e0b0f']));
+  .interpolator(d3.interpolateRgbBasis(['#fff4e6', '#fdba74', '#E07000', '#7c3400']));
 
+// Total scale: unchanged (blue — already colorblind safe)
 const totalScale = d3.scaleSequential()
   .domain([0, 1300])
   .interpolator(d3.interpolateRgbBasis(['#eff6ff', '#93c5fd', '#3b82f6', '#1e3a8a']));
@@ -66,7 +72,6 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
     '55':'WI','56':'WY','72':'PR','78':'VI'
   };
 
-  // Full state name lookup
   const stateFullNames = {
     AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',
     CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'Dist. of Columbia',
@@ -130,23 +135,20 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
     .attr('stroke-width', 0.5)
     .attr('pointer-events', 'none');
 
-  // Size canvas to match SVG
   syncCanvasSize();
   window.addEventListener('resize', () => { syncCanvasSize(); drawDots(); });
 
-  // Build legend
   buildLegend(currentMode);
 
-  // Update global broken % in header
-  const total = Object.values(STATE_DATA).reduce((s, d) => s + d.total, 0);
+  const total  = Object.values(STATE_DATA).reduce((s, d) => s + d.total, 0);
   const broken = Object.values(STATE_DATA).reduce((s, d) => s + d.broken, 0);
   document.getElementById('global-pct').textContent = (broken / total * 100).toFixed(1) + '%';
-  document.getElementById('last-updated').textContent = 'Live · ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-updated').textContent =
+    'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 });
 
 // ── ZOOM TO STATE ─────────────────────────────────────────────
 function zoomToState(feature, abbr, name, el) {
-  // Deselect previous
   d3.selectAll('.state-path').classed('selected', false);
   d3.select(el).classed('selected', true);
 
@@ -160,11 +162,12 @@ function zoomToState(feature, abbr, name, el) {
   svg.transition().duration(ZOOM_DURATION)
     .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
 
-  // Show zoomed label
   document.getElementById('zoomed-label').classList.remove('hidden');
-  document.getElementById('zoomed-state-name').textContent = `${name} — ${STATE_DATA[abbr]?.broken || 0} broken / ${STATE_DATA[abbr]?.total || 0} total`;
+  document.getElementById('zoomed-state-name').textContent =
+    `${name} — ${STATE_DATA[abbr]?.broken || 0} broken / ${STATE_DATA[abbr]?.total || 0} total`;
   document.getElementById('legend-dots').classList.remove('hidden');
-  document.getElementById('zoom-hint').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3l9 9-9 9"/></svg> Click anywhere on the map to reset`;
+  document.getElementById('zoom-hint').innerHTML =
+    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3l9 9-9 9"/></svg> Click anywhere on the map to reset`;
 }
 
 // ── RESET ZOOM ────────────────────────────────────────────────
@@ -177,9 +180,13 @@ function resetZoom() {
 
   document.getElementById('zoomed-label').classList.add('hidden');
   document.getElementById('legend-dots').classList.add('hidden');
-  document.getElementById('zoom-hint').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg> Click a state to zoom in and see individual locations`;
+  document.getElementById('zoom-hint').innerHTML =
+    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg> Click a state to zoom in and see individual locations`;
 
-  setTimeout(() => { ctx.clearRect(0, 0, dotCanvas.width, dotCanvas.height); dotCanvas.classList.remove('visible'); }, ZOOM_DURATION);
+  setTimeout(() => {
+    ctx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+    dotCanvas.classList.remove('visible');
+  }, ZOOM_DURATION);
 }
 
 // ── DOT DRAWING ───────────────────────────────────────────────
@@ -200,22 +207,15 @@ function drawDots() {
 
   const svgEl = document.getElementById('choropleth');
   const rect = svgEl.getBoundingClientRect();
-
-  // Canvas CSS size = SVG rendered size
   const cssW = rect.width;
   const cssH = rect.height;
-
-  // The SVG viewBox is MAP_W x MAP_H but rendered at cssW x cssH
-  // So there's a scale factor from SVG units to CSS pixels
   const svgScaleX = cssW / MAP_W;
   const svgScaleY = cssH / MAP_H;
 
   ctx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
 
-  // Dot size: smaller when zoomed out, bigger when zoomed in
   const dotR = Math.max(2, Math.min(6, k * 1.2));
 
-  // Filter to zoomed state only if applicable
   const locs = zoomedState
     ? LOCATIONS.filter(l => l.state === zoomedState)
     : LOCATIONS;
@@ -223,18 +223,17 @@ function drawDots() {
   for (const loc of locs) {
     const proj = projection([loc.lon, loc.lat]);
     if (!proj) continue;
-    const [sx, sy] = proj; // SVG viewBox coordinates
+    const [sx, sy] = proj;
 
-    // Convert: SVG viewBox → CSS pixels → apply zoom transform
     const px = currentTransform.x * svgScaleX + sx * k * svgScaleX;
     const py = currentTransform.y * svgScaleY + sy * k * svgScaleY;
 
-    // Clip
     if (px < -dotR || px > cssW + dotR || py < -dotR || py > cssH + dotR) continue;
 
     ctx.beginPath();
     ctx.arc(px, py, dotR, 0, Math.PI * 2);
-    ctx.fillStyle = loc.is_broken ? 'rgba(232,25,30,0.85)' : 'rgba(34,197,94,0.75)';
+    // Use colorblind-safe orange/teal instead of red/green
+    ctx.fillStyle = loc.is_broken ? COLOR_BROKEN : COLOR_WORKING;
     ctx.fill();
 
     if (dotR > 3) {
@@ -250,11 +249,10 @@ function syncCanvasSize() {
   const svgEl = document.getElementById('choropleth');
   const rect = svgEl.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
-  dotCanvas.width = rect.width * dpr;
+  dotCanvas.width  = rect.width * dpr;
   dotCanvas.height = rect.height * dpr;
-  dotCanvas.style.width = rect.width + 'px';
+  dotCanvas.style.width  = rect.width + 'px';
   dotCanvas.style.height = rect.height + 'px';
-  // Reset and reapply DPR scale cleanly (never accumulate)
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
@@ -272,7 +270,7 @@ function positionTooltip(event) {
   let y = event.clientY - rect.top - 10;
   if (x + 230 > rect.width) x = event.clientX - rect.left - 230;
   tooltip.style.left = x + 'px';
-  tooltip.style.top = y + 'px';
+  tooltip.style.top  = y + 'px';
   tooltip.classList.remove('hidden');
 }
 
@@ -302,13 +300,15 @@ function getFill(abbr, mode) {
 
 // ── LEGEND ───────────────────────────────────────────────────
 function buildLegend(mode) {
-  const grad = document.getElementById('legend-gradient');
+  const grad  = document.getElementById('legend-gradient');
   const minEl = document.getElementById('legend-min');
   const maxEl = document.getElementById('legend-max');
-  document.getElementById('legend-title').textContent = mode === 'rate' ? 'Broken Rate (%)' : 'Total Locations';
+  document.getElementById('legend-title').textContent =
+    mode === 'rate' ? 'Broken Rate (%)' : 'Total Locations';
 
   if (mode === 'rate') {
-    grad.style.background = 'linear-gradient(to bottom, #9e0b0f, #ef4444, #fca5a5, #fff5f0)';
+    // Orange scale matches colorblind-safe palette
+    grad.style.background = 'linear-gradient(to bottom, #7c3400, #E07000, #fdba74, #fff4e6)';
     minEl.textContent = '0%';
     maxEl.textContent = '50%+';
   } else {
