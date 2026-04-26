@@ -3,7 +3,6 @@
    LOCATIONS and STATE_DATA are already loaded as globals
    from locations_data.js and state_data.js
    ============================================================ */
-
 const STATS_URL = 'https://data.mcbroken.com/stats.json';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -15,12 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await fetch(STATS_URL);
     const statsData = await res.json();
 
-    document.getElementById('global-pct').textContent = statsData.broken.toFixed(1) + '%';
+    document.getElementById('global-pct').textContent =
+      statsData.broken.toFixed(1) + '%';
     document.getElementById('last-updated').textContent =
       'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     buildCityTable(statsData.cities);
-
   } catch (err) {
     console.error('Failed to fetch live stats:', err);
     // Fall back to computing from local LOCATIONS data
@@ -32,18 +31,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function buildStatCardsFromLocal() {
-  const total  = LOCATIONS.length;
-  const broken = LOCATIONS.filter(l => l.is_broken).length;
+  const total   = LOCATIONS.length;
+  const broken  = LOCATIONS.filter(l => l.is_broken).length;
   const working = total - broken;
 
   const states = Object.entries(STATE_DATA).filter(([, d]) => d.total >= 10);
   const sorted = [...states].sort((a, b) => b[1].rate - a[1].rate);
-  const worst = sorted[0];
-  const best  = sorted[sorted.length - 1];
+  const worst  = sorted[0];
+  const best   = sorted[sorted.length - 1];
 
   setCard('sc-total',   'Locations tracked',  total.toLocaleString(),   "U.S. McDonald's", '');
-  setCard('sc-broken',  'Broken right now',   broken.toLocaleString(),  `${(broken/total*100).toFixed(1)}% of all locations`, 'red');
-  setCard('sc-working', 'Working machines',   working.toLocaleString(), `${(working/total*100).toFixed(1)}% operational`, 'green');
+  setCard('sc-broken',  'Broken right now',   broken.toLocaleString(),  `${(broken / total * 100).toFixed(1)}% of all locations`, 'red');
+  setCard('sc-working', 'Working machines',   working.toLocaleString(), `${(working / total * 100).toFixed(1)}% operational`, 'green');
   setCard('sc-worst',   'Worst state',        worst[0], `${worst[1].rate}% broken (${worst[1].broken}/${worst[1].total})`, 'red');
   setCard('sc-best',    'Best state',         best[0],  `${best[1].rate}% broken (${best[1].broken}/${best[1].total})`, 'green');
 }
