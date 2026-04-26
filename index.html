@@ -1,34 +1,135 @@
-name: Refresh McBroken Data
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McBroken — U.S. Ice Cream Machine Status</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-on:
-  schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🍦</span>
+        <span class="logo-text">McBroken</span>
+      </div>
+      <div class="header-stat">
+        <span class="stat-label">Broken right now</span>
+        <span class="stat-value" id="global-pct">—</span>
+      </div>
+      <div class="header-meta">
+        <span id="last-updated">Live data</span>
+      </div>
+    </div>
+  </header>
 
-jobs:
-  refresh:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
+  <!-- HERO BAND -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Which McDonald's ice cream<br>machines are <em>actually</em> broken?</h1>
+      <p class="hero-sub">Real-time data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> — 13,565 U.S. locations tracked.</p>
+    </div>
+  </section>
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+  <!-- TOGGLE + CONTROLS -->
+  <div class="controls-bar">
+    <div class="controls-inner">
+      <div class="toggle-group" role="group" aria-label="Map view">
+        <button class="toggle-btn active" id="btn-rate" onclick="switchMode('rate')">Broken Rate %</button>
+        <button class="toggle-btn" id="btn-total" onclick="switchMode('total')">Total Locations</button>
+      </div>
+      <div class="zoom-hint" id="zoom-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
+        Click a state to zoom in and see individual locations
+      </div>
+    </div>
+  </div>
 
-      - name: Install dependencies
-        run: pip install requests
+  <!-- MAP CONTAINER -->
+  <main class="map-section">
+    <div class="map-wrapper">
+      <svg id="choropleth"></svg>
 
-      - name: Refresh data
-        run: python scrape.py
+      <!-- Dot layer (shown when zoomed in) -->
+      <canvas id="dot-canvas"></canvas>
 
-      - name: Commit updated data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add state_data.js locations_data.js mcbroken_live.csv
-          git diff --staged --quiet || git commit -m "chore: refresh McBroken data $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+      <!-- State label overlay -->
+      <div id="zoomed-label" class="zoomed-label hidden">
+        <button onclick="resetZoom()" class="back-btn">← Back to U.S.</button>
+        <span id="zoomed-state-name"></span>
+      </div>
+
+      <!-- Tooltip -->
+      <div id="tooltip" class="tooltip hidden"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend-panel">
+      <div class="legend-title" id="legend-title">Broken Rate (%)</div>
+      <div class="legend-gradient" id="legend-gradient"></div>
+      <div class="legend-labels">
+        <span id="legend-min">0%</span>
+        <span id="legend-max">50%+</span>
+      </div>
+      <div class="legend-dots-key hidden" id="legend-dots">
+        <div class="dot-key"><span class="dot-sample working"></span> Working</div>
+        <div class="dot-key"><span class="dot-sample broken"></span> Broken</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- STATS STRIP -->
+  <section class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-card" id="sc-total"></div>
+      <div class="stat-card" id="sc-broken"></div>
+      <div class="stat-card" id="sc-working"></div>
+      <div class="stat-card" id="sc-worst"></div>
+      <div class="stat-card" id="sc-best"></div>
+    </div>
+  </section>
+
+  <!-- CITY TABLE -->
+  <section class="city-section">
+    <div class="city-inner">
+      <h2>Worst cities right now</h2>
+      <table class="city-table" id="city-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>City</th>
+            <th>Broken</th>
+            <th>Locations</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody id="city-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>Data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> by <a href="https://twitter.com/rashiq" target="_blank">@rashiq</a>. Built for Data Visualisation coursework.</p>
+      <p class="footer-note">McBroken places a $18,752 order every minute at every U.S. McDonald's to detect broken machines.</p>
+    </div>
+  </footer>
+
+  <!-- DATA -->
+  <script src="state_data.js"></script>
+  <script src="locations_data.js"></script>
+
+  <!-- D3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <script src="map.js"></script>
+  <script src="stats.js"></script>
+</body>
+</html>
