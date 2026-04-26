@@ -1,35 +1,24 @@
 /* ============================================================
-   Colorblind-safe stat card palette — add to style.css
-   Replace or supplement existing .sc-value.red / .sc-value.green
-
-   Palette rationale (WCAG AA on #111 dark bg):
-   --blue:   #4A9EFF  — neutral/total  (safe for all CVD types)
-   --orange: #E07000  — bad/broken     (distinguishable from teal for deuteranopia)
-   --teal:   #00B4A0  — good/working   (distinguishable from orange for deuteranopia)
-
-   None of these are confused with each other under:
-   - Deuteranopia (red-green, most common)
-   - Protanopia   (red blind)
-   - Tritanopia   (blue-yellow, rare)
+   Colorblind-safe stat card palette
+   --blue:   #4A9EFF  — neutral/total
+   --orange: #E07000  — bad/broken
+   --teal:   #00B4A0  — good/working
    ============================================================ */
 
-/* Add to :root or your existing CSS variables block */
 :root {
   --blue:   #4A9EFF;
   --orange: #E07000;
   --teal:   #00B4A0;
 }
 
-/* Stat card color classes */
 .sc-value.blue   { color: var(--blue); }
 .sc-value.orange { color: var(--orange); }
 .sc-value.teal   { color: var(--teal); }
 
-/* Keep legacy classes working if anything else uses them */
-.sc-value.red   { color: var(--orange); } /* remapped to orange */
-.sc-value.green { color: var(--teal); }   /* remapped to teal */
+/* Remap legacy classes */
+.sc-value.red   { color: var(--orange); }
+.sc-value.green { color: var(--teal); }
 
-/* Icon — small, decorative, sits before the number */
 .sc-icon {
   display: inline-block;
   font-size: 0.55em;
@@ -41,19 +30,15 @@
   top: -2px;
 }
 
-/* City table broken count — use orange instead of raw red */
-/* Update the inline style in buildCityTable or override here */
 .city-table td[style*="color:var(--red)"],
 .city-table .broken-count {
   color: var(--orange) !important;
 }
 
-/* Rate bar fill — use orange for consistency */
 .rate-bar-fill {
   background: var(--orange);
 }
 
-/* Focus ring — visible for keyboard navigation */
 .stat-card:focus-within {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
