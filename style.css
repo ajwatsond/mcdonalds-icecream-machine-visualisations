@@ -366,17 +366,17 @@ header {
   color: var(--white);
   margin-top: 4px;
 }
-.sc-value.blue   { color: #7DC3ff; }
-.sc-value.orange { color: #F4A340; }
-.sc-value.teal   { color: #2DD4C4; }
-.sc-value.red    { color: #F4A340; }
-.sc-value.green  { color: #2DD4C4; }
+.sc-value.blue   { color: #7DC3ff !important; }
+.sc-value.orange { color: #F4A340 !important; }
+.sc-value.teal   { color: #2DD4C4 !important; }
+.sc-value.red    { color: #F4A340 !important; }
+.sc-value.green  { color: #2DD4C4 !important; }
 .sc-icon {
   display: inline-block;
   font-size: 0.55em;
   vertical-align: middle;
   margin-right: 5px;
-  opacity: 0.75;
+  opacity: 1.0;
   line-height: 1;
   position: relative;
   top: -2px;
