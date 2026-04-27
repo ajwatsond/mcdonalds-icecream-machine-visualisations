@@ -25,6 +25,14 @@
       <div class="header-meta">
         <span id="last-updated">Live data</span>
       </div>
+      <button
+        id="help-btn"
+        class="help-btn"
+        onclick="openHelp()"
+        aria-label="Open help and how to use guide"
+        aria-haspopup="dialog">
+        ?
+      </button>
     </div>
   </header>
 
@@ -121,6 +129,80 @@
     </div>
   </footer>
 
+  <!-- HELP MODAL BACKDROP -->
+  <div id="help-backdrop" class="help-backdrop hidden" aria-hidden="true"></div>
+
+  <!-- HELP MODAL -->
+  <div
+    id="help-modal"
+    class="help-modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="help-title"
+    aria-hidden="true">
+
+    <div class="help-header">
+      <div class="help-title-group">
+        <span class="help-logo">🍦</span>
+        <h2 id="help-title">How to use McBroken</h2>
+      </div>
+      <button class="help-close" id="help-close" onclick="closeHelp()" aria-label="Close help">✕</button>
+    </div>
+
+    <div class="help-body">
+
+      <!-- CHOROPLETH -->
+      <div class="help-section">
+        <div class="help-section-icon">🗺️</div>
+        <div class="help-section-content">
+          <h3>Interactive Map</h3>
+          <p>The map shows broken ice cream machine rates across every U.S. state, coloured by severity.</p>
+          <ul class="help-list">
+            <li><strong>Click a state</strong> to zoom in and see individual McDonald's locations as dots.</li>
+            <li><strong>Orange dots</strong> are broken machines. <strong>Teal dots</strong> are working.</li>
+            <li><strong>Click anywhere</strong> on the map background to zoom back out to the U.S. view.</li>
+            <li>Use the <strong>Broken Rate % / Total Locations</strong> toggle above the map to switch the colour scale.</li>
+            <li>Hover over any state to see a summary tooltip with exact counts.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <!-- STATS -->
+      <div class="help-section">
+        <div class="help-section-icon">📊</div>
+        <div class="help-section-content">
+          <h3>Stats Strip &amp; City Table</h3>
+          <p>Below the map you'll find live summary stats and a ranked table of the 20 cities with the most broken machines right now. Data refreshes automatically from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a>.</p>
+        </div>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <!-- COMING SOON -->
+      <div class="help-section coming-soon">
+        <div class="help-section-icon">🔜</div>
+        <div class="help-section-content">
+          <h3>Coming Soon <span class="help-badge">Planned</span></h3>
+          <ul class="help-list muted">
+            <li>📈 <strong>Historical trends</strong> — broken rate over time, by state and nationally</li>
+            <li>🕐 <strong>Time-of-day heatmap</strong> — when are machines most likely to be broken?</li>
+            <li>🏆 <strong>State leaderboard</strong> — ranked table with filters and sorting</li>
+            <li>🔍 <strong>Location search</strong> — find your nearest McDonald's and check its status</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="help-footer">
+      <p class="help-data-note">Data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> by @rashiq — updated every minute.</p>
+      <button class="help-dismiss" onclick="closeHelp()">Got it, let's go →</button>
+    </div>
+
+  </div>
+
   <!-- D3 first, then data, then app scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
@@ -130,5 +212,6 @@
 
   <script src="map.js"></script>
   <script src="stats.js"></script>
+  <script src="help.js"></script>
 </body>
 </html>
