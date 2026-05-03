@@ -124,6 +124,7 @@ function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
 }
 
 function buildCityTable(cities) {
+  console.log('City data sample:', cities[0]);
   const top20 = [...cities]
     .sort((a, b) => b.broken - a.broken)
     .slice(0, 20);
