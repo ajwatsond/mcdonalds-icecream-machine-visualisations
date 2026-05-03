@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ice Cream — State Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .coming-soon-section {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+    }
+    .coming-soon-inner {
+      max-width: 560px;
+      text-align: center;
+    }
+    .coming-soon-icon {
+      font-size: 72px;
+      display: block;
+      margin-bottom: 24px;
+      line-height: 1;
+    }
+    .coming-soon-inner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 6vw, 72px);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .coming-soon-inner h2 em {
+      color: var(--orange-light);
+      font-style: normal;
+    }
+    .coming-soon-inner p {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #bbb;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .coming-soon-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: #1e1e1e;
+      color: var(--orange-light);
+      border: 1px solid #333;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 32px;
+    }
+    .coming-soon-features {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+    .coming-soon-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .coming-soon-feature-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .coming-soon-feature-text strong {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+    .coming-soon-feature-text span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #777;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🍦</span>
+        <span class="logo-text">Ice Cream</span>
+      </div>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">U.S. Map</a>
+        <a href="states.html" class="nav-link active">State Rankings</a>
+      </nav>
+      <div class="header-meta">
+        <span>Per capita breakdown</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">State Rankings — Per Capita</div>
+      <h1>Which states are <em>really</em><br>failing their people?</h1>
+      <p class="hero-sub">Normalised by population — because Texas having more broken machines than Rhode Island is hardly news.</p>
+    </div>
+  </section>
+
+  <!-- COMING SOON -->
+  <section class="coming-soon-section" style="background: var(--black);">
+    <div class="coming-soon-inner">
+      <span class="coming-soon-icon">🍦</span>
+      <div class="coming-soon-tag">In Development</div>
+      <h2>State <em>Rankings</em><br>Coming Soon</h2>
+      <p>Per capita visualisation of ice cream machine availability across all 50 states — normalised by population so small states get a fair shot at being just as broken.</p>
+
+      <div class="coming-soon-features">
+        <div class="coming-soon-feature">
+          <div class="coming-soon-feature-icon">🍦</div>
+          <div class="coming-soon-feature-text">
+            <strong>Ice cream cone bars</strong>
+            <span>Each state shown as a bar chart where 🍦 = working and 🍧 = broken, scaled per 100k residents.</span>
+          </div>
+        </div>
+        <div class="coming-soon-feature">
+          <div class="coming-soon-feature-icon">📊</div>
+          <div class="coming-soon-feature-text">
+            <strong>Population-normalised ranking</strong>
+            <span>Sorted by broken machines per capita — not raw count. Size of state is no longer an excuse.</span>
+          </div>
+        </div>
+        <div class="coming-soon-feature">
+          <div class="coming-soon-feature-icon">🔍</div>
+          <div class="coming-soon-feature-text">
+            <strong>Filter &amp; sort</strong>
+            <span>Sort by worst rate, best rate, or total machines. Filter by region.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>Data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> by <a href="https://twitter.com/rashiq" target="_blank">@rashiq</a>. Built for Data Visualisation coursework.</p>
+      <p class="footer-note">McBroken places a $18,752 order every minute at every U.S. McDonald's to detect broken machines.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
