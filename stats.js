@@ -116,7 +116,12 @@ function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
   `;
 }
 
-function buildCityTable(cities) {
+let _lastCities = [];
+function refreshCityTable(usOnly) {
+  buildCityTable(_lastCities, usOnly);
+}
+
+function buildCityTable(cities, usOnly = false) {
   console.log('City data sample:', cities[0]);
   const filtered = usOnly
     ? cities.filter(c => {
@@ -129,7 +134,10 @@ function buildCityTable(cities) {
   const top20 = [...filtered]
     .sort((a, b) => b.broken - a.broken)
     .slice(0, 20);
-    
+
+  _lastCities = statsData.cities; // cache for toggling US-only
+  buildCityTable(statsData.cities);
+
   const tbody = document.getElementById('city-tbody');
   if (!tbody) return;
 
