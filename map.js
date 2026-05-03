@@ -309,11 +309,11 @@ function buildLegend(mode) {
   if (mode === 'rate') {
     // Orange scale matches colorblind-safe palette
     grad.style.background = 'linear-gradient(to bottom, #fff4e6, #fdba74, #E07000, #7c3400)';
-    minEl.textContent = '0%';
     maxEl.textContent = '50%+';
+    minEl.textContent = '0%';
   } else {
     grad.style.background = 'linear-gradient(to bottom, #1e3a8a, #3b82f6, #93c5fd, #eff6ff)';
-    minEl.textContent = '0';
     maxEl.textContent = '1,300+';
+    minEl.textContent = '0';
   }
 }
