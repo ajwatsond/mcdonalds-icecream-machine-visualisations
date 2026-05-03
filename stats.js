@@ -2,20 +2,20 @@
    stats.js — Live stats from data.mcbroken.com/stats.json
    LOCATIONS and STATE_DATA are already loaded as globals
    from locations_data.js and state_data.js
-
-   Accessibility:
-   - Color is never the sole indicator (icons + labels supplement color)
-   - Colorblind-safe palette: blue (neutral), orange (bad), teal (good)
-   - WCAG AA contrast ratios met on dark background
-   - Screen reader: aria-label on each card, live region for global %
    ============================================================ */
 const STATS_URL = 'https://data.mcbroken.com/stats.json';
 
-
 const US_LOCATIONS = LOCATIONS.filter(l => US_STATES.has(l.state));
+
+let _lastCities = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   buildStatCardsFromLocal();
+
+  // Wire up city toggle
+  document.getElementById('us-only-toggle').addEventListener('change', function() {
+    buildCityTable(_lastCities, this.checked);
+  });
 
   try {
     const res = await fetch(STATS_URL);
@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('last-updated').textContent =
       'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    buildCityTable(statsData.cities);
+    _lastCities = statsData.cities;
+    buildCityTable(statsData.cities, true); // default US only
   } catch (err) {
     console.error('Failed to fetch live stats:', err);
     const brokenUS = US_LOCATIONS.filter(l => l.is_broken).length;
@@ -116,13 +117,7 @@ function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
   `;
 }
 
-let _lastCities = [];
-function refreshCityTable(usOnly) {
-  buildCityTable(_lastCities, usOnly);
-}
-
-function buildCityTable(cities, usOnly = false) {
-  console.log('City data sample:', cities[0]);
+function buildCityTable(cities, usOnly = true) {
   const filtered = usOnly
     ? cities.filter(c => {
         const parts = c.city.split(', ');
@@ -134,9 +129,6 @@ function buildCityTable(cities, usOnly = false) {
   const top20 = [...filtered]
     .sort((a, b) => b.broken - a.broken)
     .slice(0, 20);
-
-  _lastCities = statsData.cities; // cache for toggling US-only
-  buildCityTable(statsData.cities);
 
   const tbody = document.getElementById('city-tbody');
   if (!tbody) return;
