@@ -267,11 +267,12 @@ function syncCanvas() {
 
 // ── TOOLTIP POSITIONING ───────────────────────────────────────
 function positionTooltip(event) {
-  const svgEl = document.getElementById('choropleth');
-  const rect = svgEl.getBoundingClientRect();
+  const wrapEl = document.querySelector('.map-wrapper');
+  const rect = wrapEl.getBoundingClientRect();
   let x = event.clientX - rect.left + 12;
   let y = event.clientY - rect.top - 10;
   if (x + 230 > rect.width) x = event.clientX - rect.left - 230;
+  if (y < 0) y = event.clientY - rect.top + 20;
   tooltip.style.left = x + 'px';
   tooltip.style.top  = y + 'px';
   tooltip.classList.remove('hidden');
