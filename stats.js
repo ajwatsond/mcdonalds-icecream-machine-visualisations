@@ -11,6 +11,16 @@
    ============================================================ */
 const STATS_URL = 'https://data.mcbroken.com/stats.json';
 
+// US-only filter — excludes UK, Germany, and any other non-US locations in the dataset
+const US_STATES = new Set([
+  'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL',
+  'IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE',
+  'NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD',
+  'TN','TX','UT','VT','VA','WA','WV','WI','WY','PR'
+]);
+
+const US_LOCATIONS = LOCATIONS.filter(l => US_STATES.has(l.state));
+
 document.addEventListener('DOMContentLoaded', async () => {
   buildStatCardsFromLocal();
 
@@ -20,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const globalPct = document.getElementById('global-pct');
     globalPct.textContent = statsData.broken.toFixed(1) + '%';
-    // aria-live so screen readers announce the update when it changes
     globalPct.setAttribute('aria-live', 'polite');
     globalPct.setAttribute('aria-label',
       `${statsData.broken.toFixed(1)} percent of machines currently broken`);
@@ -31,8 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     buildCityTable(statsData.cities);
   } catch (err) {
     console.error('Failed to fetch live stats:', err);
-    const brokenUS = LOCATIONS.filter(l => l.is_broken).length;
-    const pct = (brokenUS / LOCATIONS.length * 100).toFixed(1);
+    const brokenUS = US_LOCATIONS.filter(l => l.is_broken).length;
+    const pct = (brokenUS / US_LOCATIONS.length * 100).toFixed(1);
     const globalPct = document.getElementById('global-pct');
     globalPct.textContent = pct + '%';
     globalPct.setAttribute('aria-label',
@@ -42,8 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function buildStatCardsFromLocal() {
-  const total   = LOCATIONS.length;
-  const broken  = LOCATIONS.filter(l => l.is_broken).length;
+  const total   = US_LOCATIONS.length;
+  const broken  = US_LOCATIONS.filter(l => l.is_broken).length;
   const working = total - broken;
 
   const states = Object.entries(STATE_DATA).filter(([, d]) => d.total >= 10);
@@ -51,8 +60,6 @@ function buildStatCardsFromLocal() {
   const worst  = sorted[0];
   const best   = sorted[sorted.length - 1];
 
-  // Colorblind-safe classes: 'blue' (neutral), 'orange' (bad), 'teal' (good)
-  // Icons give non-color meaning — never rely on color alone
   setCard(
     'sc-total',
     'Locations tracked',
@@ -100,24 +107,13 @@ function buildStatCardsFromLocal() {
   );
 }
 
-/**
- * @param {string} id         - element ID
- * @param {string} label      - card label
- * @param {string} value      - big display number/text
- * @param {string} sub        - subtitle text
- * @param {string} colorClass - 'blue' | 'orange' | 'teal'
- * @param {string} icon       - decorative symbol (aria-hidden)
- * @param {string} ariaLabel  - full plain-text description for screen readers
- */
 function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  // role="region" + aria-label lets screen readers navigate directly to each card
   el.setAttribute('role', 'region');
   el.setAttribute('aria-label', ariaLabel);
 
-  // Visual content is aria-hidden; the region's aria-label carries the meaning
   el.innerHTML = `
     <div class="sc-label" aria-hidden="true">${label}</div>
     <div class="sc-value ${colorClass}" aria-hidden="true">
@@ -135,7 +131,6 @@ function buildCityTable(cities) {
   const tbody = document.getElementById('city-tbody');
   if (!tbody) return;
 
-  // Accessible table: thead already has <th> scope, rows get aria-label for summary
   tbody.innerHTML = top20.map((city, i) => {
     const brokenCount = Math.round(city.broken / 100 * city.total_locations);
     const pct         = city.broken.toFixed(1);

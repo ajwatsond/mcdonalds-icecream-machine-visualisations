@@ -13,17 +13,23 @@ let currentMode = 'rate';
 let zoomedState = null;
 let currentTransform = d3.zoomIdentity;
 
-// Colorblind-safe dot colors (match CSS --orange / --teal)
-const COLOR_BROKEN  = 'rgba(224,112,0,0.85)';   // --orange
-const COLOR_WORKING = 'rgba(0,166,147,0.75)';    // --teal
+// US-only filter — matches stats.js
+const US_STATES = new Set([
+  'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL',
+  'IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE',
+  'NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD',
+  'TN','TX','UT','VT','VA','WA','WV','WI','WY','PR'
+]);
+
+// Colorblind-safe dot colors
+const COLOR_BROKEN  = 'rgba(224,112,0,0.85)';
+const COLOR_WORKING = 'rgba(0,166,147,0.75)';
 
 // Color scales
-// Rate scale: light orange-pale → orange → dark orange-red
 const rateScale = d3.scaleSequential()
   .domain([0, 50])
   .interpolator(d3.interpolateRgbBasis(['#fff4e6', '#fdba74', '#E07000', '#7c3400']));
 
-// Total scale: unchanged (blue — already colorblind safe)
 const totalScale = d3.scaleSequential()
   .domain([0, 1300])
   .interpolator(d3.interpolateRgbBasis(['#eff6ff', '#93c5fd', '#3b82f6', '#1e3a8a']));
@@ -87,7 +93,6 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
     PR:'Puerto Rico'
   };
 
-  // Draw states
   stateGroup.selectAll('path')
     .data(states.features)
     .join('path')
@@ -122,12 +127,10 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
       event.stopPropagation();
     });
 
-  // Click backdrop to reset
   svg.on('click', () => {
     if (zoomedState) resetZoom();
   });
 
-  // Draw state borders
   mapGroup.append('path')
     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
     .attr('fill', 'none')
@@ -216,9 +219,10 @@ function drawDots() {
 
   const dotR = Math.max(2, Math.min(6, k * 1.2));
 
-  const locs = zoomedState
-    ? LOCATIONS.filter(l => l.state === zoomedState)
-    : LOCATIONS;
+  // Filter to US only, and optionally to zoomed state
+  const locs = LOCATIONS.filter(l =>
+    US_STATES.has(l.state) && (!zoomedState || l.state === zoomedState)
+  );
 
   for (const loc of locs) {
     const proj = projection([loc.lon, loc.lat]);
@@ -232,7 +236,6 @@ function drawDots() {
 
     ctx.beginPath();
     ctx.arc(px, py, dotR, 0, Math.PI * 2);
-    // Use colorblind-safe orange/teal instead of red/green
     ctx.fillStyle = loc.is_broken ? COLOR_BROKEN : COLOR_WORKING;
     ctx.fill();
 
@@ -307,13 +310,12 @@ function buildLegend(mode) {
     mode === 'rate' ? 'Broken Rate (%)' : 'Total Locations';
 
   if (mode === 'rate') {
-    // Orange scale matches colorblind-safe palette
     grad.style.background = 'linear-gradient(to top, #7c3400, #E07000, #fdba74, #fff4e6)';
     maxEl.textContent = '0%';
     minEl.textContent = '50%+';
   } else {
     grad.style.background = 'linear-gradient(to top, #1e3a8a, #3b82f6, #93c5fd, #eff6ff)';
-    minEl.textContent = '0';
-    maxEl.textContent = '1,300+';
+    maxEl.textContent = '0';
+    minEl.textContent = '1,300+';
   }
 }
