@@ -14,7 +14,7 @@ let zoomedState = null;
 let currentTransform = d3.zoomIdentity;
 
 // US-only filter — matches stats.js
-const US_STATES = new Set([
+var US_STATES = new Set([
   'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL',
   'IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE',
   'NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD',

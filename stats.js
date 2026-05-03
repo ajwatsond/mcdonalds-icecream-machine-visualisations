@@ -12,7 +12,7 @@
 const STATS_URL = 'https://data.mcbroken.com/stats.json';
 
 // US-only filter — excludes UK, Germany, and any other non-US locations in the dataset
-const US_STATES = new Set([
+var US_STATES = new Set([
   'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL',
   'IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE',
   'NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD',
