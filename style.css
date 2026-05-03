@@ -290,11 +290,17 @@ header {
   color: var(--mid);
   margin-bottom: 12px;
 }
-.legend-gradient {
+.legend-scale {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
   height: 120px;
+  margin-bottom: 16px;
+}
+.legend-gradient {
   width: 24px;
   border-radius: 3px;
-  margin: 0 auto 8px;
+  flex-shrink: 0;
 }
 .legend-labels {
   display: flex;
@@ -303,8 +309,6 @@ header {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--mid);
-  height: 120px;
-  margin-bottom: 16px;
 }
 .legend-dots-key { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; }
 .dot-key {
