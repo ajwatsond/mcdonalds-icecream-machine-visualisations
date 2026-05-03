@@ -194,6 +194,7 @@ header {
 .map-wrapper {
   display: grid;
   grid-template-areas: "map";
+  position: relative;
   background: #e8f4fc;
   border-radius: 8px;
   overflow: hidden;
