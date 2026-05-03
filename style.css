@@ -682,3 +682,31 @@ footer {
 }
 .help-dismiss:hover { background: #333; }
 .help-dismiss:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+/* ── SITE NAV ─────────────────────────────────── */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: 4px;
+  color: #bbb;
+  text-decoration: none;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.nav-link:hover {
+  color: var(--white);
+  text-decoration: none;
+  border-color: #333;
+}
+.nav-link.active {
+  color: var(--white);
+  background: #1e1e1e;
+  border-color: #333;
+}
