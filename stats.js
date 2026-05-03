@@ -118,10 +118,18 @@ function setCard(id, label, value, sub, colorClass, icon, ariaLabel) {
 
 function buildCityTable(cities) {
   console.log('City data sample:', cities[0]);
-  const top20 = [...cities]
+  const filtered = usOnly
+    ? cities.filter(c => {
+        const parts = c.city.split(', ');
+        const state = parts[parts.length - 1];
+        return US_STATES.has(state);
+      })
+    : cities;
+
+  const top20 = [...filtered]
     .sort((a, b) => b.broken - a.broken)
     .slice(0, 20);
-
+    
   const tbody = document.getElementById('city-tbody');
   if (!tbody) return;
 
