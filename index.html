@@ -112,6 +112,12 @@
   <section class="city-section">
     <div class="city-inner">
       <h2>Worst cities right now</h2>
+      <div class="city-toggle">
+        <label class="city-toggle-label">
+          <input type="checkbox" id="us-only-toggle" checked onchange="refreshCityTable(this.checked)" />
+          U.S. only
+        </label>
+      </div>
       <table class="city-table" id="city-table">
         <thead>
           <tr>
