@@ -183,6 +183,7 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
   document.getElementById('last-updated').textContent =
     'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const bannerPct = document.getElementById('banner-pct');
+  console.log('banner el:', bannerPct, 'pct:', pct);
   if (bannerPct) bannerPct.textContent = pct;
 });
 
