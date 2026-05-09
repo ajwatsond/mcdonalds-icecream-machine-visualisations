@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ice Cream — Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .docs-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+    .docs-section h2 {
+      font-family: var(--font-display);
+      font-size: 48px;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      margin-bottom: 8px;
+      margin-top: 56px;
+      padding-top: 56px;
+      border-top: 2px solid var(--border);
+    }
+    .docs-section h2:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .docs-section h3 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 0.03em;
+      color: var(--ink);
+      margin-top: 32px;
+      margin-bottom: 8px;
+    }
+    .docs-section p {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: #333;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .docs-section ul, .docs-section ol {
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+    .docs-section li {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: #333;
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+    .docs-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--orange);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .docs-callout {
+      background: var(--orange-pale);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #444;
+      line-height: 1.7;
+    }
+    .docs-callout strong { color: var(--ink); }
+    .docs-tech-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #f0ece6;
+      color: var(--mid);
+      margin: 2px 3px 2px 0;
+    }
+    .docs-decision {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .docs-decision-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .docs-decision-card h4 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+    .docs-decision-card p {
+      font-size: 13px;
+      margin-bottom: 0;
+    }
+    .docs-decision-card.chosen {
+      border-color: var(--orange);
+      background: var(--orange-pale);
+    }
+    .docs-decision-card.chosen h4 { color: var(--orange); }
+    .docs-timeline {
+      position: relative;
+      margin: 24px 0;
+      padding-left: 24px;
+      border-left: 2px solid var(--border);
+    }
+    .docs-timeline-item {
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .docs-timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -30px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: 2px solid var(--paper);
+    }
+    .docs-timeline-item h4 {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .docs-timeline-item p {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: #f0ece6;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--ink);
+    }
+    .docs-toc {
+      background: var(--black);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .docs-toc h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--yellow);
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .docs-toc a {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #bbb;
+      text-decoration: none;
+      padding: 5px 0;
+      border-bottom: 1px solid #222;
+      transition: color 0.15s;
+    }
+    .docs-toc a:hover { color: var(--yellow); text-decoration: none; }
+    .docs-toc a:last-child { border-bottom: none; }
+    @media (max-width: 600px) {
+      .docs-decision { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🍦</span>
+        <span class="logo-text">Ice Cream</span>
+      </div>
+      <nav class="site-nav">
+        <a href="index.html" class="nav-link">U.S. Map</a>
+        <a href="states.html" class="nav-link">State Rankings</a>
+        <a href="docs.html" class="nav-link active">Documentation</a>
+      </nav>
+      <div class="header-meta">
+        <span>Design &amp; Technical Documentation</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Data Visualisation Coursework</div>
+      <h1>Design &amp; Technical<br><em>Documentation</em></h1>
+      <p class="hero-sub">A record of design decisions, technical implementation, and iteration for the Ice Cream machine status visualisation project.</p>
+    </div>
+  </section>
+
+  <!-- DOCS CONTENT -->
+  <div class="docs-section">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="docs-toc">
+      <h3>Contents</h3>
+      <a href="#overview">1. Project Overview</a>
+      <a href="#data">2. Data Source &amp; Methodology</a>
+      <a href="#design">3. Design Process</a>
+      <a href="#accessibility">4. Accessibility</a>
+      <a href="#technical">5. Technical Implementation</a>
+      <a href="#iterations">6. Iterations &amp; Decisions</a>
+      <a href="#future">7. Future Visualisations</a>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <h2 id="overview">1. Project Overview</h2>
+    <p>This project visualises the real-time status of McDonald's ice cream machines across the United States, using live data from <strong>mcbroken.com</strong> — a service created by Rashiq Zahid that places a $18,752 order every minute at every U.S. McDonald's location to detect whether the ice cream machine is operational.</p>
+    <p>The goal is to transform raw machine status data into an accessible, informative, and visually compelling dashboard that communicates both the scale of the problem and the geographic distribution of broken machines.</p>
+
+    <div class="docs-callout">
+      <strong>Why this dataset?</strong> The McBroken dataset is uniquely suited to visualisation — it is real-time, geographically distributed across 13,500+ locations, and captures a phenomenon that is both humorous and genuinely useful to consumers. It also presents interesting design challenges around scale, density, and communicating probability rather than certainty.
+    </div>
+
+    <!-- 2. DATA -->
+    <h2 id="data">2. Data Source &amp; Methodology</h2>
+    <h3>Primary Data Source</h3>
+    <p>All machine status data is sourced from <code>data.mcbroken.com/stats.json</code>, which provides:</p>
+    <ul>
+      <li>A global broken percentage across all tracked U.S. locations</li>
+      <li>Per-city broken counts and rates</li>
+      <li>Total location counts per city</li>
+    </ul>
+    <p>Location-level data (latitude, longitude, state, broken status) is provided via a static <code>locations_data.js</code> file, and state-level aggregates via <code>state_data.js</code>. These are pre-processed snapshots used to power the choropleth map and dot layer without requiring additional API calls.</p>
+
+    <h3>Data Filtering</h3>
+    <p>The raw dataset includes McDonald's locations outside the United States — primarily in the United Kingdom and Germany. These are filtered out client-side using a set of valid U.S. state abbreviations (<code>US_STATES</code>), applied to both the location dot layer and the city table. The city table additionally offers a user-controlled toggle to switch between U.S.-only and global views.</p>
+
+    <h3>Limitations</h3>
+    <ul>
+      <li>Machine status is inferred from order placement, not direct hardware monitoring — a machine may be marked broken if it is temporarily offline, being cleaned, or simply slow to respond.</li>
+      <li>The dataset does not include historical data — all views are snapshots of current state.</li>
+      <li>Some international locations appear in the dataset and require client-side filtering.</li>
+    </ul>
+
+    <!-- 3. DESIGN -->
+    <h2 id="design">3. Design Process</h2>
+    <h3>Visual Direction</h3>
+    <p>The visual language is editorial data journalism — bold typography, high information density, and a restrained but expressive colour palette. The aesthetic draws from print data journalism (think NYT Graphics or The Pudding) adapted for an interactive web context.</p>
+    <p>Key typographic choices:</p>
+    <ul>
+      <li><strong>Bebas Neue</strong> — display headings and stat values. Chosen for its condensed boldness and strong data-display character.</li>
+      <li><strong>DM Mono</strong> — labels, metadata, and UI chrome. Monospace reinforces the data-driven, technical nature of the content.</li>
+      <li><strong>DM Sans</strong> — body copy and table content. Clean and readable at small sizes.</li>
+    </ul>
+
+    <h3>Colour Palette</h3>
+    <p>The original prototype used red and green to indicate broken and working machines — a common convention that fails for the approximately 8% of users with colour vision deficiency (CVD), particularly deuteranopia and protanopia, for whom red and green are indistinguishable.</p>
+    <p>The palette was redesigned to be safe under all common CVD types:</p>
+    <ul>
+      <li><strong>Orange</strong> <code>#9E4F00</code> / <code>#F4A340</code> — broken/bad. Used on white and dark backgrounds respectively.</li>
+      <li><strong>Teal</strong> <code>#007A6E</code> / <code>#2DD4C4</code> — working/good.</li>
+      <li><strong>Blue</strong> <code>#0062CC</code> / <code>#7DC3FF</code> — neutral/total counts.</li>
+    </ul>
+    <p>Two variants of each colour are maintained — a dark version for use on white/light backgrounds (meeting 5:1 WCAG contrast) and a light version for dark backgrounds.</p>
+
+    <!-- 4. ACCESSIBILITY -->
+    <h2 id="accessibility">4. Accessibility</h2>
+    <p>Accessibility was treated as a first-class requirement rather than an afterthought. The following standards were targeted:</p>
+    <ul>
+      <li><strong>WCAG 2.1 AA</strong> contrast ratio of 5:1 for all text elements</li>
+      <li>Colour is never the sole means of conveying information — icons supplement colour coding throughout</li>
+      <li>Full keyboard navigation support with visible focus indicators</li>
+      <li>Screen reader compatibility via semantic HTML, ARIA roles, and descriptive labels</li>
+    </ul>
+
+    <h3>Screen Reader Implementation</h3>
+    <ul>
+      <li>Each stat card uses <code>role="region"</code> and <code>aria-label</code> with a complete plain-English description</li>
+      <li>The global broken percentage uses <code>aria-live="polite"</code> so updates are announced</li>
+      <li>City table rows use <code>aria-label</code> summarising the full row; individual cells are <code>aria-hidden</code> to avoid redundant reading</li>
+      <li>Decorative icons are <code>aria-hidden</code></li>
+      <li>The help modal uses <code>role="dialog"</code>, <code>aria-modal="true"</code>, and focus management</li>
+    </ul>
+
+    <!-- 5. TECHNICAL -->
+    <h2 id="technical">5. Technical Implementation</h2>
+    <h3>Technology Stack</h3>
+    <p>
+      <span class="docs-tech-pill">D3.js v7</span>
+      <span class="docs-tech-pill">TopoJSON</span>
+      <span class="docs-tech-pill">Canvas API</span>
+      <span class="docs-tech-pill">Vanilla JS</span>
+      <span class="docs-tech-pill">CSS Custom Properties</span>
+      <span class="docs-tech-pill">GitHub Pages</span>
+    </p>
+    <p>No build tools, bundlers, or frameworks are used. The project is intentionally dependency-light — D3 and TopoJSON are loaded from CDN, and everything else is plain HTML, CSS, and JavaScript.</p>
+
+    <h3>Map Architecture</h3>
+    <p>The choropleth map uses two rendering layers:</p>
+    <ul>
+      <li><strong>SVG layer</strong> — state paths rendered via D3 and TopoJSON from the US Atlas dataset. Handles state fills, borders, hover events, and zoom transforms.</li>
+      <li><strong>Canvas layer</strong> — individual location dots rendered to a <code>&lt;canvas&gt;</code> element overlaid on the SVG using CSS grid stacking. Canvas is used rather than SVG circles for performance — rendering 13,000+ SVG elements would be prohibitively slow.</li>
+    </ul>
+    <p>The two layers are stacked using <code>grid-template-areas</code>, both assigned to the same grid area so they overlap perfectly without requiring explicit height on the container.</p>
+
+    <h3>Zoom &amp; Dot Rendering</h3>
+    <p>Dots are only drawn when the zoom scale exceeds a threshold of 3× (<code>DOT_ZOOM_THRESHOLD</code>). At lower zoom levels the dot layer is hidden and the canvas cleared. This prevents visual noise at the national scale and focuses detail on the state level.</p>
+    <p>Dot positions are calculated by projecting geographic coordinates through D3's AlbersUSA projection, then applying the current zoom transform and a scale factor to convert from SVG viewBox coordinates to canvas pixel coordinates.</p>
+
+    <!-- 6. ITERATIONS -->
+    <h2 id="iterations">6. Iterations &amp; Key Decisions</h2>
+
+    <div class="docs-timeline">
+      <div class="docs-timeline-item">
+        <h4>Initial Build</h4>
+        <p>Basic choropleth with red/green colour scheme. State-level data only, no dot layer, no live API integration.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Colour Palette Overhaul</h4>
+        <p>Replaced red/green with orange/teal colorblind-safe palette after accessibility review. Required separate light and dark variants for use on different backgrounds.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Canvas Dot Layer</h4>
+        <p>Added individual location dots on zoom. Initial implementation used SVG circles (too slow). Switched to Canvas API with coordinate transform calculations.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Accessibility Pass</h4>
+        <p>Full ARIA implementation, contrast audit to 5:1, icon supplements for colour coding, screen reader labels throughout.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>International Data Filtering</h4>
+        <p>Discovered dataset included UK and German locations. Added client-side US_STATES filter and user-controlled toggle on the city table.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Multi-page Navigation</h4>
+        <p>Added State Rankings and Documentation pages. Navigation bar added to header across all pages.</p>
+      </div>
+    </div>
+
+    <h3>Key Design Decisions</h3>
+
+    <div class="docs-decision">
+      <div class="docs-decision-card">
+        <h4>Considered</h4>
+        <p>SVG circles for location dots — familiar D3 pattern, easy to style and interact with.</p>
+      </div>
+      <div class="docs-decision-card chosen">
+        <h4>Chosen ✓</h4>
+        <p>Canvas API for dots — necessary for performance at 13,000+ locations. SVG approach caused severe frame rate drops.</p>
+      </div>
+    </div>
+
+    <div class="docs-decision">
+      <div class="docs-decision-card">
+        <h4>Considered</h4>
+        <p>React or Vue for component architecture — easier state management and reactivity.</p>
+      </div>
+      <div class="docs-decision-card chosen">
+        <h4>Chosen ✓</h4>
+        <p>Vanilla JS — no build step required, simpler deployment to GitHub Pages, sufficient for the project's complexity level.</p>
+      </div>
+    </div>
+
+    <!-- 7. FUTURE -->
+    <h2 id="future">7. Future Visualisations</h2>
+    <p>The following visualisations are planned for future development:</p>
+    <ol>
+      <li><strong>State Rankings (Per Capita)</strong> — Bar chart normalised by state population, using ice cream cone iconography to represent working vs broken machines per 100k residents. Allows fair comparison between small and large states.</li>
+      <li><strong>Historical Trends</strong> — Time series of broken rates nationally and by state, pending access to historical data.</li>
+      <li><strong>Time-of-Day Heatmap</strong> — Broken rates by hour of day to identify patterns in when machines go offline.</li>
+      <li><strong>Location Search</strong> — Allow users to find their nearest McDonald's and check its current status.</li>
+    </ol>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>Data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> by <a href="https://twitter.com/rashiq" target="_blank">@rashiq</a>. Built for Data Visualisation coursework.</p>
+      <p class="footer-note">McBroken places a $18,752 order every minute at every U.S. McDonald's to detect broken machines.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

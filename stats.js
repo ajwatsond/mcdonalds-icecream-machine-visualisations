@@ -143,7 +143,7 @@ function buildCityTable(cities, usOnly = true) {
       <tr aria-label="${rowLabel}">
         <td class="rank" aria-hidden="true">${i + 1}</td>
         <td class="city-name" aria-hidden="true">${city.city}</td>
-        <td style="color:var(--orange);font-weight:500" aria-hidden="true">${brokenCount}</td>
+        <td style="color:#9E4F00;font-weight:500" aria-hidden="true">${brokenCount}</td>
         <td aria-hidden="true">${city.total_locations}</td>
         <td class="rate-bar-cell" aria-hidden="true">
           <div class="rate-bar-wrap" role="presentation">

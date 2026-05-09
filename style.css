@@ -441,13 +441,13 @@ header {
 }
 .rate-bar-fill {
   height: 100%;
-  background: var(--orange);
+  background: 9E4F00;
   border-radius: 3px;
   transition: width 0.4s;
 }
 .rate-pct {
   font-weight: 500;
-  color: var(--orange);
+  color: #9E4F00;
   min-width: 36px;
   text-align: right;
 }
@@ -738,3 +738,91 @@ footer {
   height: 14px;
   cursor: pointer;
 }
+
+/* ── BROKEN % BANNER ─────────────────────────── */
+.broken-banner {
+  background: var(--black);
+  border-bottom: 1px solid #222;
+}
+.broken-banner-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.broken-banner-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+}
+.broken-banner-pct {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: #F4A340;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* ── STATE HOVER REMINDER ────────────────────── */
+.state-hover-reminder {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17,17,17,0.82);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  border: 1px solid #333;
+  opacity: 0;
+  transition: opacity 0.25s;
+  letter-spacing: 0.03em;
+}
+.state-hover-reminder.visible {
+  opacity: 1;
+}
+
+/* ── SIDE TOOLTIP (zoomed state) ─────────────── */
+.side-tooltip {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--black);
+  color: var(--white);
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  box-shadow: var(--shadow-heavy);
+  width: 200px;
+  z-index: 50;
+  border-left: 3px solid var(--orange);
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+.side-tooltip.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.side-tooltip strong {
+  display: block;
+  font-size: 13px;
+  color: var(--yellow);
+  margin-bottom: 6px;
+}
+.side-tooltip .tt-broken  { color: #F4A340; }
+.side-tooltip .tt-working { color: #2DD4C4; }

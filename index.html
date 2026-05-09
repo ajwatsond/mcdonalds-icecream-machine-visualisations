@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ice Dream — U.S. Machine Status</title>
+  <title>Ice Cream — U.S. Machine Status</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -16,11 +16,12 @@
     <div class="header-inner">
       <div class="logo">
         <span class="logo-icon">🍦</span>
-        <span class="logo-text">Ice Dream</span>
+        <span class="logo-text">Ice Cream</span>
       </div>
       <nav class="site-nav">
         <a href="index.html" class="nav-link active">U.S. Map</a>
         <a href="states.html" class="nav-link">State Rankings</a>
+        <a href="docs.html" class="nav-link">Documentation</a>
       </nav>
       <div class="header-stat">
         <span class="stat-label">Broken right now</span>
@@ -59,6 +60,15 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
         Click a state to zoom in and see individual locations
       </div>
+    </div>
+  </div>
+
+  <!-- BROKEN % BANNER -->
+  <div class="broken-banner">
+    <div class="broken-banner-inner">
+      <span class="broken-banner-label">Right now</span>
+      <span class="broken-banner-pct" id="banner-pct">—%</span>
+      <span class="broken-banner-label">of U.S. McDonald's ice cream machines are broken</span>
     </div>
   </div>
 
@@ -156,7 +166,7 @@
     <div class="help-header">
       <div class="help-title-group">
         <span class="help-logo">🍦</span>
-        <h2 id="help-title">How to use McBroken</h2>
+        <h2 id="help-title">How to use Ice Cream</h2>
       </div>
       <button class="help-close" id="help-close" onclick="closeHelp()" aria-label="Close help">✕</button>
     </div>
