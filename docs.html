@@ -192,7 +192,7 @@
     <div class="header-inner">
       <div class="logo">
         <span class="logo-icon">🍦</span>
-        <span class="logo-text">Ice Cream</span>
+        <span class="logo-text">Ice Dream</span>
       </div>
       <nav class="site-nav">
         <a href="index.html" class="nav-link">U.S. Map</a>
@@ -378,8 +378,42 @@
       </div>
     </div>
 
-    <!-- 7. FUTURE -->
-    <h2 id="future">7. Future Visualisations</h2>
+    <!-- 7. USER FEEDBACK -->
+    <h2 id="feedback">7. User Feedback &amp; Iterations</h2>
+    <p>The visualisation was reviewed by a peer group whose feedback informed several design changes. Feedback fell into two categories — implemented and rejected — each with documented rationale.</p>
+
+    <h3>Implemented Feedback</h3>
+
+    <div class="docs-timeline">
+      <div class="docs-timeline-item">
+        <h4>Click Reminder on State Hover</h4>
+        <p>Users were not discovering that states were clickable. A pill-shaped reminder now appears at the bottom of the map when hovering over a state, fading out after 2.5 seconds to avoid becoming distracting. This addresses a core discoverability problem — an interactive feature with no visible affordance is effectively invisible.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Side Tooltip on Zoom</h4>
+        <p>When zoomed into a state, the cursor-following tooltip was obscuring the dot layer. A fixed side tooltip now slides in from the right of the map on hover, showing the state summary without interfering with the dot positions.</p>
+      </div>
+      <div class="docs-timeline-item">
+        <h4>Broken Percentage Banner</h4>
+        <p>The global broken percentage was previously shown only in the small header stat. Feedback indicated users wanted the headline figure to be more prominent. A dedicated banner was added between the controls bar and the map, displaying the live percentage in large type — making the most important number on the page impossible to miss.</p>
+      </div>
+    </div>
+
+    <h3>Rejected Feedback</h3>
+
+    <div class="docs-decision">
+      <div class="docs-decision-card">
+        <h4>Requested</h4>
+        <p>Show the full street address of each McDonald's location when hovering over a dot on the zoomed map.</p>
+      </div>
+      <div class="docs-decision-card" style="border-color: #999;">
+        <h4>Rejected ✕</h4>
+        <p>Declined for three reasons. First, with 13,500+ locations the dot layer is already dense — address labels would cause severe visual clutter and overlapping text. Second, rendering this volume of text labels would significantly degrade performance, particularly on lower-powered devices. Third, at this scale the street address adds little analytical value — the existing tooltip already provides city, state, broken count, and rate, which is sufficient for the visualisation's purpose.</p>
+      </div>
+    </div>
+
+    <!-- 8. FUTURE -->
+    <h2 id="future">8. Future Visualisations</h2>
     <p>The following visualisations are planned for future development:</p>
     <ol>
       <li><strong>State Rankings (Per Capita)</strong> — Bar chart normalised by state population, using ice cream cone iconography to represent working vs broken machines per 100k residents. Allows fair comparison between small and large states.</li>
