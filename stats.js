@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     globalPct.setAttribute('aria-label',
       `${statsData.broken.toFixed(1)} percent of machines currently broken`);
 
+    // Update banner
+    const bannerPct = document.getElementById('banner-pct');
+    if (bannerPct) bannerPct.textContent = statsData.broken.toFixed(1) + '%';
+
     document.getElementById('last-updated').textContent =
       'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -41,6 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     globalPct.setAttribute('aria-label',
       `${pct} percent of machines currently broken (cached data)`);
     document.getElementById('last-updated').textContent = 'Cached data';
+    const bannerPct = document.getElementById('banner-pct');
+    if (bannerPct) bannerPct.textContent = pct + '%';
   }
 });
 
@@ -143,7 +149,7 @@ function buildCityTable(cities, usOnly = true) {
       <tr aria-label="${rowLabel}">
         <td class="rank" aria-hidden="true">${i + 1}</td>
         <td class="city-name" aria-hidden="true">${city.city}</td>
-        <td style="color:#9E4F00;font-weight:500" aria-hidden="true">${brokenCount}</td>
+        <td style="color:var(--orange);font-weight:500" aria-hidden="true">${brokenCount}</td>
         <td aria-hidden="true">${city.total_locations}</td>
         <td class="rate-bar-cell" aria-hidden="true">
           <div class="rate-bar-wrap" role="presentation">

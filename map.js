@@ -14,7 +14,7 @@ let zoomedState = null;
 let currentTransform = d3.zoomIdentity;
 
 // US-only filter — matches stats.js
-var US_STATES = new Set([
+const US_STATES = new Set([
   'AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL',
   'IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE',
   'NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD',
@@ -45,6 +45,22 @@ const stateGroup = mapGroup.append('g').attr('id', 'states');
 const tooltip = document.getElementById('tooltip');
 const dotCanvas = document.getElementById('dot-canvas');
 const ctx = dotCanvas.getContext('2d');
+
+// Inject side tooltip and hover reminder dynamically
+const mapWrapper = document.querySelector('.map-wrapper');
+
+const sideTooltip = document.createElement('div');
+sideTooltip.className = 'side-tooltip';
+sideTooltip.id = 'side-tooltip';
+mapWrapper.appendChild(sideTooltip);
+
+const hoverReminder = document.createElement('div');
+hoverReminder.className = 'state-hover-reminder';
+hoverReminder.id = 'hover-reminder';
+hoverReminder.textContent = '👆 Click a state to zoom in and see individual locations';
+mapWrapper.appendChild(hoverReminder);
+
+let reminderTimeout = null;
 
 const projection = d3.geoAlbersUsa()
   .scale(1280)
@@ -108,17 +124,34 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
       const sd = STATE_DATA[abbr];
       if (!sd) return;
       const name = stateFullNames[abbr] || abbr;
-      tooltip.innerHTML = `
+      const html = `
         <strong>${name} (${abbr})</strong>
         <span class="tt-broken">⚠ Broken: ${sd.broken} (${sd.rate}%)</span>
         <span class="tt-working">✓ Working: ${sd.total - sd.broken}</span>
         <span>Total locations: ${sd.total}</span>
       `;
+      tooltip.innerHTML = html;
       tooltip.classList.remove('hidden');
       positionTooltip(event);
+
+      // Show click reminder if not zoomed
+      if (!zoomedState) {
+        clearTimeout(reminderTimeout);
+        hoverReminder.classList.add('visible');
+        reminderTimeout = setTimeout(() => hoverReminder.classList.remove('visible'), 2500);
+      }
+
+      // Update side tooltip if zoomed
+      if (zoomedState) {
+        sideTooltip.innerHTML = html;
+        sideTooltip.classList.add('visible');
+      }
     })
     .on('mousemove', positionTooltip)
-    .on('mouseleave', () => tooltip.classList.add('hidden'))
+    .on('mouseleave', () => {
+      tooltip.classList.add('hidden');
+      sideTooltip.classList.remove('visible');
+    })
     .on('click', function(event, d) {
       const abbr = stateNames[d.id];
       if (!abbr || !STATE_DATA[abbr]) return;
@@ -145,9 +178,12 @@ d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
 
   const total  = Object.values(STATE_DATA).reduce((s, d) => s + d.total, 0);
   const broken = Object.values(STATE_DATA).reduce((s, d) => s + d.broken, 0);
-  document.getElementById('global-pct').textContent = (broken / total * 100).toFixed(1) + '%';
+  const pct = (broken / total * 100).toFixed(1) + '%';
+  document.getElementById('global-pct').textContent = pct;
   document.getElementById('last-updated').textContent =
     'Live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const bannerPct = document.getElementById('banner-pct');
+  if (bannerPct) bannerPct.textContent = pct;
 });
 
 // ── ZOOM TO STATE ─────────────────────────────────────────────
@@ -267,14 +303,13 @@ function syncCanvas() {
 
 // ── TOOLTIP POSITIONING ───────────────────────────────────────
 function positionTooltip(event) {
-  const wrapEl = document.querySelector('.map-wrapper');
-  const rect = wrapEl.getBoundingClientRect();
+  const svgEl = document.getElementById('choropleth');
+  const rect = svgEl.getBoundingClientRect();
   let x = event.clientX - rect.left + 12;
   let y = event.clientY - rect.top - 10;
   if (x + 230 > rect.width) x = event.clientX - rect.left - 230;
-  if (y < 0) y = 10;
-  tooltip.style.left = Math.max(0, Math.min(x, rect.width - 230)) + 'px';
-  tooltip.style.top  = Math.max(0, y) + 'px';
+  tooltip.style.left = x + 'px';
+  tooltip.style.top  = y + 'px';
   tooltip.classList.remove('hidden');
 }
 
