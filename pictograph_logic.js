@@ -98,10 +98,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // --- CALCULATE HEIGHT ---
-        const maxTotalIcons  = d3.max(filteredData, d => Math.floor((Number(d.population) || 0) / unitsPerIcon)) || 1;
-        const numRowsOfIcons = Math.ceil(maxTotalIcons / iconsPerRow) || 1;
-        const rowHeight      = (numRowsOfIcons * (iconSize + 10)) + 60;
-        const totalHeight    = filteredData.length * rowHeight;
+        // Each row gets its own height based on its own icon count
+        const rowHeights = filteredData.map(d => {
+          const pop = Number(d.population) || 0;
+          const totalIcons = Math.floor(pop / unitsPerIcon) || 1;
+          const numRows = Math.ceil(totalIcons / iconsPerRow) || 1;
+          return (numRows * (iconSize + 10)) + 40;
+        });
+        const totalHeight    = rowHeights.reduce((a, b) => a + b, 0);
         const finalSVGHeight = totalHeight + margin.top + margin.bottom;
 
         // --- DRAW SVG ---
@@ -153,17 +157,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const canvas = canvasSVG.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        const yScale = d3.scaleBand()
-            .domain(filteredData.map(d => d.state))
-            .range([0, totalHeight])
-            .padding(0.4);
+        // Build cumulative y offsets so each row is only as tall as it needs to be
+        const yOffsets = {};
+        let cumulative = 0;
+        filteredData.forEach((d, i) => {
+          yOffsets[d.state] = cumulative;
+          cumulative += rowHeights[i];
+        });
 
         const allRows = canvas.selectAll(".icon-row")
             .data(filteredData, d => d.state)
             .enter()
             .append("g")
             .attr("class", "icon-row")
-            .attr("transform", d => `translate(0, ${yScale(d.state)})`);
+            .attr("transform", d => `translate(0, ${yOffsets[d.state]})`);
 
         // State labels
         allRows.append("text")
