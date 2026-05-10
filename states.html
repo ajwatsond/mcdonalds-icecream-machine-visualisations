@@ -3,95 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ice Dream — State Rankings</title>
+  <title>Ice Cream — State Rankings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <style>
-    .coming-soon-section {
-      min-height: 60vh;
+    .pictograph-controls {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+    }
+    .pictograph-controls-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 24px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 64px 24px;
+      gap: 24px;
+      flex-wrap: wrap;
     }
-    .coming-soon-inner {
-      max-width: 560px;
-      text-align: center;
-    }
-    .coming-soon-icon {
-      font-size: 72px;
-      display: block;
-      margin-bottom: 24px;
-      line-height: 1;
-    }
-    .coming-soon-inner h2 {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 6vw, 72px);
-      color: var(--white);
-      letter-spacing: 0.04em;
-      line-height: 1;
-      margin-bottom: 16px;
-    }
-    .coming-soon-inner h2 em {
-      color: var(--orange-light);
-      font-style: normal;
-    }
-    .coming-soon-inner p {
+    .pictograph-controls label {
       font-family: var(--font-mono);
-      font-size: 13px;
-      color: #bbb;
-      line-height: 1.8;
-      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--mid);
     }
-    .coming-soon-tag {
-      display: inline-block;
+    #state-select {
       font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: #1e1e1e;
-      color: var(--orange-light);
-      border: 1px solid #333;
-      padding: 6px 16px;
-      border-radius: 20px;
-      margin-bottom: 32px;
+      font-size: 12px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
     }
-    .coming-soon-features {
-      margin-top: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      text-align: left;
+    #state-select:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .pictograph-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
     }
-    .coming-soon-feature {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+    #pictograph-container {
+      background: var(--white);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+      min-height: 200px;
     }
-    .coming-soon-feature-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .coming-soon-feature-text strong {
-      display: block;
-      font-family: var(--font-body);
-      font-size: 14px;
-      color: var(--white);
-      margin-bottom: 2px;
-    }
-    .coming-soon-feature-text span {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #777;
-      line-height: 1.5;
-    }
+    .axis-label { font-size: 14px; fill: var(--ink); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -101,7 +65,7 @@
     <div class="header-inner">
       <div class="logo">
         <span class="logo-icon">🍦</span>
-        <span class="logo-text">Ice Dream</span>
+        <span class="logo-text">Ice Cream</span>
       </div>
       <nav class="site-nav">
         <a href="index.html" class="nav-link">U.S. Map</a>
@@ -123,39 +87,28 @@
     </div>
   </section>
 
-  <!-- COMING SOON -->
-  <section class="coming-soon-section" style="background: var(--black);">
-    <div class="coming-soon-inner">
-      <span class="coming-soon-icon">🍦</span>
-      <div class="coming-soon-tag">In Development</div>
-      <h2>State <em>Rankings</em><br>Coming Soon</h2>
-      <p>Per capita visualisation of ice cream machine availability across all 50 states — normalised by population so small states get a fair shot at being just as broken.</p>
-
-      <div class="coming-soon-features">
-        <div class="coming-soon-feature">
-          <div class="coming-soon-feature-icon">🍦</div>
-          <div class="coming-soon-feature-text">
-            <strong>Ice cream cone bars</strong>
-            <span>Each state shown as a bar chart where 🍦 = working and 🍧 = broken, scaled per 100k residents.</span>
-          </div>
-        </div>
-        <div class="coming-soon-feature">
-          <div class="coming-soon-feature-icon">📊</div>
-          <div class="coming-soon-feature-text">
-            <strong>Population-normalised ranking</strong>
-            <span>Sorted by broken machines per capita — not raw count. Size of state is no longer an excuse.</span>
-          </div>
-        </div>
-        <div class="coming-soon-feature">
-          <div class="coming-soon-feature-icon">🔍</div>
-          <div class="coming-soon-feature-text">
-            <strong>Filter &amp; sort</strong>
-            <span>Sort by worst rate, best rate, or total machines. Filter by region.</span>
-          </div>
-        </div>
+  <!-- CONTROLS -->
+  <div class="pictograph-controls">
+    <div class="pictograph-controls-inner">
+      <div class="toggle-group" role="group">
+        <label class="city-toggle-label" style="padding: 6px 16px;">
+          <input type="checkbox" id="us-only-toggle-pict" checked />
+          U.S. only
+        </label>
       </div>
+      <label for="state-select" style="font-family: var(--font-mono); font-size: 12px; color: var(--mid);">Filter by state:</label>
+      <select id="state-select">
+        <option value="all">All States</option>
+      </select>
     </div>
-  </section>
+  </div>
+
+  <!-- PICTOGRAPH -->
+  <div class="pictograph-section">
+    <div id="pictograph-container">
+      <p style="color: #999; font-family: var(--font-mono); font-size: 13px; padding: 32px; text-align: center;">Loading data...</p>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -164,6 +117,13 @@
       <p class="footer-note">McBroken places a $18,752 order every minute at every U.S. McDonald's to detect broken machines.</p>
     </div>
   </footer>
+
+  <!-- D3 first, then data scripts, then pictograph -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="state_data.js"></script>
+  <script src="population_data.js"></script>
+  <script src="pictograph_logic.js"></script>
+  <script src="organizedata.js"></script>
 
 </body>
 </html>
