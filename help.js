@@ -1,11 +1,12 @@
 /* ============================================================
    help.js — Help modal: auto-show on first visit, reopen via ?
+   Works across multiple pages with per-page localStorage keys
    ============================================================ */
 
-const HELP_SEEN_KEY = 'mcbroken_help_seen';
+const HELP_SEEN_KEY = 'icecream_help_seen_' + window.location.pathname.split('/').pop();
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Auto-show on first visit
+  // Auto-show on first visit to this page
   if (!localStorage.getItem(HELP_SEEN_KEY)) {
     openHelp();
   }
@@ -20,22 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function openHelp() {
-  const modal = document.getElementById('help-modal');
+  const modal    = document.getElementById('help-modal');
   const backdrop = document.getElementById('help-backdrop');
   modal.classList.remove('hidden');
   backdrop.classList.remove('hidden');
   modal.removeAttribute('aria-hidden');
-  // Trap focus on close button
   document.getElementById('help-close').focus();
 }
 
 function closeHelp() {
-  const modal = document.getElementById('help-modal');
+  const modal    = document.getElementById('help-modal');
   const backdrop = document.getElementById('help-backdrop');
   modal.classList.add('hidden');
   backdrop.classList.add('hidden');
   modal.setAttribute('aria-hidden', 'true');
   localStorage.setItem(HELP_SEEN_KEY, '1');
-  // Return focus to help button
-  document.getElementById('help-btn').focus();
+  const helpBtn = document.getElementById('help-btn');
+  if (helpBtn) helpBtn.focus();
 }

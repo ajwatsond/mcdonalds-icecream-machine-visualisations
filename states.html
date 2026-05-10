@@ -75,6 +75,14 @@
       <div class="header-meta">
         <span>Per capita breakdown</span>
       </div>
+      <button
+        id="help-btn"
+        class="help-btn"
+        onclick="openHelp()"
+        aria-label="Open help and how to use guide"
+        aria-haspopup="dialog">
+        ?
+      </button>
     </div>
   </header>
 
@@ -118,12 +126,81 @@
     </div>
   </footer>
 
+  <!-- HELP MODAL BACKDROP -->
+  <div id="help-backdrop" class="help-backdrop hidden" aria-hidden="true"></div>
+
+  <!-- HELP MODAL -->
+  <div
+    id="help-modal"
+    class="help-modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="help-title"
+    aria-hidden="true">
+
+    <div class="help-header">
+      <div class="help-title-group">
+        <span class="help-logo">🍦</span>
+        <h2 id="help-title">How to use State Rankings</h2>
+      </div>
+      <button class="help-close" id="help-close" onclick="closeHelp()" aria-label="Close help">✕</button>
+    </div>
+
+    <div class="help-body">
+
+      <div class="help-section">
+        <div class="help-section-icon">📊</div>
+        <div class="help-section-content">
+          <h3>Reading the Pictograph</h3>
+          <p>Each row represents a U.S. state, ranked by broken machine rate. Icons represent people — not machines.</p>
+          <ul class="help-list">
+            <li><strong>🍦 Ice cream cone</strong> — represents 200,000 people with access to a working machine.</li>
+            <li><strong>🍧 Melted cone</strong> — represents 200,000 people whose nearest machine is broken.</li>
+            <li>The stats on the right show the exact population, working %, and broken % for each state.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <div class="help-section-icon">🔧</div>
+        <div class="help-section-content">
+          <h3>Filters &amp; Controls</h3>
+          <ul class="help-list">
+            <li><strong>U.S. only toggle</strong> — checked by default, filters out any non-U.S. locations in the dataset.</li>
+            <li><strong>Filter by state dropdown</strong> — select a single state to focus on it, or leave on "All States" for the full picture.</li>
+            <li>States are ordered worst to best by broken rate so the most affected states appear at the top.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help-divider"></div>
+
+      <div class="help-section">
+        <div class="help-section-icon">📍</div>
+        <div class="help-section-content">
+          <h3>What does "deficit" mean?</h3>
+          <p>The ice cream deficit is the number of people in a state who are proportionally affected by broken machines, calculated by multiplying the state population by the broken machine rate. It normalises the data so small states can be fairly compared to large ones.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="help-footer">
+      <p class="help-data-note">Data from <a href="https://mcbroken.com" target="_blank">mcbroken.com</a> — updated every minute.</p>
+      <button class="help-dismiss" onclick="closeHelp()">Got it, let's go →</button>
+    </div>
+
+  </div>
+
   <!-- D3 first, then data scripts, then pictograph -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script src="state_data.js"></script>
   <script src="population_data.js"></script>
   <script src="pictograph_logic.js"></script>
-  <script src="organize_data.js"></script>
+  <script src="organizedata.js"></script>
+  <script src="help.js"></script>
 
 </body>
 </html>
