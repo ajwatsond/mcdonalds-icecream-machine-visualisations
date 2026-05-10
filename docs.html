@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ice Cream — Documentation</title>
+  <title>Ice Dream — Documentation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -210,7 +210,7 @@
     <div class="hero-inner">
       <div class="hero-eyebrow">Data Visualisation Coursework</div>
       <h1>Design &amp; Technical<br><em>Documentation</em></h1>
-      <p class="hero-sub">A record of design decisions, technical implementation, and iteration for the Ice Cream machine status visualisation project.</p>
+      <p class="hero-sub">A record of design decisions, technical implementation, and iteration for the Ice Dream machine status visualisation project.</p>
     </div>
   </section>
 
@@ -226,7 +226,9 @@
       <a href="#accessibility">4. Accessibility</a>
       <a href="#technical">5. Technical Implementation</a>
       <a href="#iterations">6. Iterations &amp; Decisions</a>
-      <a href="#future">7. Future Visualisations</a>
+      <a href="#feedback">7. User Feedback &amp; Iterations</a>
+      <a href="#state-rankings">8. State Rankings Visualisation</a>
+      <a href="#future">9. Future Visualisations</a>
     </div>
 
     <!-- 1. OVERVIEW -->
@@ -412,11 +414,56 @@
       </div>
     </div>
 
-    <!-- 8. FUTURE -->
-    <h2 id="future">8. Future Visualisations</h2>
+    <!-- 8. STATE RANKINGS -->
+    <h2 id="state-rankings">8. State Rankings Visualisation</h2>
+    <p>The State Rankings page is the second visualisation in the Ice Dream project. It addresses a key limitation of the choropleth map — raw broken counts are dominated by large states. Texas will always have more broken machines than Vermont simply because it has more McDonald's. The State Rankings page normalises this by population, allowing fair comparison across all 50 states and DC.</p>
+
+    <h3>Design Decisions</h3>
+    <p>A pictograph (isotype chart) was chosen over a standard bar chart for two reasons. First, it is more immediately readable to a general audience — ice cream cone icons are self-explanatory in context and reinforce the subject matter. Second, it communicates scale more intuitively than abstract bar lengths, particularly when comparing states with very different populations.</p>
+
+    <div class="docs-decision">
+      <div class="docs-decision-card">
+        <h4>Considered</h4>
+        <p>Standard horizontal bar chart showing broken rate % per state — simple, precise, familiar.</p>
+      </div>
+      <div class="docs-decision-card chosen">
+        <h4>Chosen ✓</h4>
+        <p>Icon-based pictograph — each icon represents 200,000 people, making population scale tangible and keeping the ice cream theme central to the design.</p>
+      </div>
+    </div>
+
+    <p>Icons were chosen as 🍦 for working machines and 🍧 for broken machines. Each icon represents 200,000 people — chosen to balance visual density (enough icons to show meaningful differences between states) against readability (not so many that rows become unwieldy).</p>
+
+    <h3>Data Methodology</h3>
+    <p>The ice cream deficit is the core metric of this visualisation. It is calculated as:</p>
+    <div class="docs-callout">
+      <strong>iceCreamDeficit = statePopluation × (brokenMachines / totalMachines)</strong><br>
+      This gives the number of people in a state who are proportionally affected by broken machines, based on the current live broken rate. It is a relative measure — it does not mean those people have literally tried to get ice cream, but represents the population-weighted impact of the broken rate.
+    </div>
+    <p>Population figures are sourced from the 2020 U.S. Census Bureau Decennial Census, stored in <code>population_data.js</code>. Machine broken rates are sourced live from the mcbroken.com API via <code>STATE_DATA</code>, which is pre-aggregated per state. States are sorted worst-to-best by broken rate by default.</p>
+
+    <h3>Technical Implementation</h3>
+    <p>The visualisation uses three files working in sequence:</p>
+    <ul>
+      <li><strong>population_data.js</strong> — static lookup of 2020 Census state populations keyed by state abbreviation.</li>
+      <li><strong>organizedata.js</strong> — fetches the live API, joins broken rate data from <code>STATE_DATA</code> with population figures, computes <code>iceCreamDeficit</code> per state, and exposes the result as <code>window.chartData</code>. Falls back to cached <code>STATE_DATA</code> if the API is unavailable.</li>
+      <li><strong>pictograph_logic.js</strong> — D3-powered rendering engine wrapped in <code>DOMContentLoaded</code> to guarantee D3 is loaded first. Builds the SVG pictograph, handles filtering, dropdown population, and icon animation. Uses cumulative y-offsets rather than <code>scaleBand</code> so each state row is only as tall as its own icon count requires — preventing large gaps between small-population states.</li>
+    </ul>
+    <p>The SVG uses <code>viewBox</code> and <code>width: 100%</code> for responsiveness. Icons are animated in with a staggered opacity transition using D3's <code>.transition().delay(i * 5)</code> pattern, giving the chart a satisfying build-in effect on load or filter change.</p>
+
+    <h3>Accessibility</h3>
+    <p>The State Rankings page follows the same accessibility standards as the main map:</p>
+    <ul>
+      <li>Stat text uses <code>#9E4F00</code> (orange) and <code>#007A6E</code> (teal) — both verified at 5:1+ contrast on the white background.</li>
+      <li>A help modal explains how to read the pictograph, what each icon represents, and how the filters work. It auto-shows on first visit and can be reopened via the <code>?</code> button in the header.</li>
+      <li>The U.S.-only toggle and state dropdown are keyboard accessible with visible focus indicators inherited from the main stylesheet.</li>
+      <li>The "no population data" fallback message is rendered in the SVG for states where census data is unavailable, rather than silently omitting the row.</li>
+    </ul>
+
+    <!-- 9. FUTURE -->
+    <h2 id="future">9. Future Visualisations</h2>
     <p>The following visualisations are planned for future development:</p>
     <ol>
-      <li><strong>State Rankings (Per Capita)</strong> — Bar chart normalised by state population, using ice cream cone iconography to represent working vs broken machines per 100k residents. Allows fair comparison between small and large states.</li>
       <li><strong>Historical Trends</strong> — Time series of broken rates nationally and by state, pending access to historical data.</li>
       <li><strong>Time-of-Day Heatmap</strong> — Broken rates by hour of day to identify patterns in when machines go offline.</li>
       <li><strong>Location Search</strong> — Allow users to find their nearest McDonald's and check its current status.</li>
